@@ -1,0 +1,42 @@
+#!/usr/bin/python3
+# coding: utf-8
+
+# Imports Python
+from sys import argv
+from os import system
+import re
+try:
+    from bs4 import BeautifulSoup
+except:
+    system('sudo pip3 install beautifulsoup4')
+from urllib.request import urlopen
+from urllib.error import HTTPError
+
+# My imports
+import filters.arguments
+import parsers.mail
+from filters.arguments import getopt
+from parsers.mail import email
+from parsers.lattes import lattes
+
+def print_result(array_list):
+    for element in array_list:
+        if element != None:
+            print(element)
+
+url = getopt.required_arg(argv, ['-s','--site']).strip()
+print("URL analisada: " + url + '\n')
+
+try:
+    html = urlopen(url)
+except HTTPError as error:
+    print('Abortar, erro: ' + error)
+    exit()
+
+gettag = BeautifulSoup(html.read(), 'lxml')
+
+emails = email(gettag)
+curriculo = lattes(gettag)
+
+print_result(emails.get_mails())
+print_result(curriculo.get_lattes())
