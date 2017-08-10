@@ -1,9 +1,7 @@
-import filters
-
-class getopt(object):
+class Getopt(object):
     # Os parameters podem ser uma lista, afim de chamar o método somente uma vez
     @staticmethod
-    def get_opt_value(stdin, parameters):
+    def getOptAndValue(stdin, parameters):
         try:
             for flag in stdin:
                 if flag in parameters:
@@ -12,7 +10,7 @@ class getopt(object):
             return None
 
     @staticmethod
-    def get_opt(stdin, parameters):
+    def getOpt(stdin, parameters):
         try:
             for flag in stdin:
                 if flag in parameters:
@@ -21,7 +19,7 @@ class getopt(object):
             return False
 
     @staticmethod
-    def required_arg(stdin, parameters):
-        if getopt.get_opt_value(stdin, parameters) == None:
+    def requiredArgs(stdin, parameters):
+        if Getopt.getOptAndValue(stdin, parameters) == None:
             return input('Informe o argumento ' + ''.join(parameters[0]) + ' (obrigatório): ')
-        return getopt.get_opt_value(stdin, parameters)
+        return Getopt.getOptAndValue(stdin, parameters)

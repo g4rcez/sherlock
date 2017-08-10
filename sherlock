@@ -4,39 +4,56 @@
 # Imports Python
 from sys import argv
 from os import system
-import re
+
 try:
     from bs4 import BeautifulSoup
+    from urllib.request import urlopen
+    from urllib.error import HTTPError
 except:
-    system('sudo pip3 install beautifulsoup4')
-from urllib.request import urlopen
-from urllib.error import HTTPError
+    print("Deseja instalar os requisitos faltantes? [Y/n]")
+    vaiInstalar = input()
+    if vaiInstalar in ('Y', 'y', 's', 'S'):
+        system("sudo pip3 install -r requirements.txt")
+    else:
+        exit()
 
 # My imports
-import filters.arguments
-import parsers.mail
-from filters.arguments import getopt
-from parsers.mail import email
-from parsers.lattes import lattes
+from utils.arguments import Getopt
+from parsers.mail import Mail
+from parsers.lattes import Lattes
+from parsers.physical_address import Physical
 
-def print_result(array_list):
-    for element in array_list:
+def printResult(arrayList):
+    if arrayList == None or arrayList == []:
+        return None
+    for element in arrayList:
         if element != None:
             print(element)
 
-url = getopt.required_arg(argv, ['-s','--site']).strip()
-print("URL analisada: " + url + '\n')
+def physical_info(html):
+    zipcode = Physical(html)
+    zipcode.getCep()
+    print(zipcode.getAddress())
+
+def mail_info(html):
+    emails = Mail(html)
+    printResult(emails.get_mails())
+
+def academic_info(html):
+    curriculo = Lattes(html)
+    printResult(curriculo.get_lattes())
+
+url = Getopt.requiredArgs(argv, ['-s', '--site']).strip()
 
 try:
     html = urlopen(url)
 except HTTPError as error:
-    print('Abortar, erro: ' + error)
+    print('Erro de requisição para: '+ url + '.Erro: ' + error)
     exit()
 
-gettag = BeautifulSoup(html.read(), 'lxml')
+gettag = BeautifulSoup(html.read(), 'lxml').prettify()
+print("URL analisada: " + url + '\n')
 
-emails = email(gettag)
-curriculo = lattes(gettag)
-
-print_result(emails.get_mails())
-print_result(curriculo.get_lattes())
+mail_info(gettag)
+academic_info(gettag)
+physical_info(gettag)

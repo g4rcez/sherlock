@@ -1,17 +1,20 @@
-import re
-import parsers
+from re import sub
+from re import findall
 
-class email():
+class Mail():
     def __init__(self, html):
         self.html = html
 
     def get_mails(self):
-        emails = self.html.findAll('a', attrs={'href': re.compile(".*mailto")})
+        emails = findall('[A-Za-z+_.]+@[A-Za-z]+\..*', self.html)
+
         maillist = []
         if len(emails) > 0:
             for links in emails:
-                email = re.sub('.*mailto:', '', str(links))
-                email = re.sub('".*', '', str(email))
-                maillist.append(email)
+                if links not in maillist:
+                    email = sub(r'".*', '', str(links))
+                    email = sub(r"'.*", '', email).strip()
+                    maillist.append(email)
+            maillist.sort()
             return maillist
         return None

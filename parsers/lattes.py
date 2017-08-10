@@ -1,17 +1,16 @@
-import re
-import parsers
+from re import sub
+from re import findall
 
-class lattes():
+class Lattes():
     def __init__(self, html):
         self.html = html
 
     def get_lattes(self):
-        lattes = self.html.findAll('a', attrs={'href': re.compile(".*lattes")})
+        all_lattes = findall('http://lattes.cnpq.br/[0-9]{15}', self.html)
         lattes_list = []
-        if lattes > 0:
-            for curriculo in lattes:
-                link = re.sub('.*href="', '', str(curriculo))
-                link = re.sub('".*', ' ', str(link))
-                lattes_list.append(link)
-            return lattes_list
-        return None
+        for lattes in all_lattes:
+            latte = sub('".*', '', lattes)
+            latte = sub(".*'", '', latte)
+            lattes_list.append(latte)
+        lattes_list.sort()
+        return lattes_list
