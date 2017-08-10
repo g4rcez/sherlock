@@ -1,4 +1,4 @@
-class Getopt(object):
+class Getopt:
     # Os parameters podem ser uma lista, afim de chamar o método somente uma vez
     @staticmethod
     def getOptAndValue(stdin, parameters):

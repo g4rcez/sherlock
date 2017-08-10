@@ -1,13 +1,13 @@
 from re import sub
 from re import findall
 
-class Mail():
+
+class Mail:
     def __init__(self, html):
         self.html = html
 
-    def get_mails(self):
+    def getMails(self):
         emails = findall('[A-Za-z+_.]+@[A-Za-z]+\..*', self.html)
-
         maillist = []
         if len(emails) > 0:
             for links in emails:

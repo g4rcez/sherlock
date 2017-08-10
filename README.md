@@ -46,3 +46,5 @@ As dependências também podem ser encontradas no arquivo requirements.txt, e ca
 1. [O'Reilly - Web Scraiping com Python - Ryan Mitchell](http://shop.oreilly.com/product/0636920034391.do)
 2. [Markdown Cheatsheet - @adam-p](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#links)
 3. [Python 3.6.2 documentation](https://docs.python.org/3/)
+4. [WordPress Accepted Files](https://en.support.wordpress.com/accepted-filetypes/)
+5. [Estrutura do CEP ](https://www.correios.com.br/para-voce/precisa-de-ajuda/o-que-e-cep-e-por-que-usa-lo/estrutura-do-cep)

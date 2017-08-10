@@ -6,6 +6,7 @@ from sys import argv
 from os import system
 
 try:
+    import requests
     from bs4 import BeautifulSoup
     from urllib.request import urlopen
     from urllib.error import HTTPError
@@ -18,10 +19,13 @@ except:
         exit()
 
 # My imports
-from utils.arguments import Getopt
-from parsers.mail import Mail
-from parsers.lattes import Lattes
-from parsers.physical_address import Physical
+from parsers.Mails import Mail
+from parsers.Images import Images
+from parsers.Lattes import Lattes
+from utils.Arguments import Getopt
+from parsers.PhysicalAddr import Physical
+from utils.ExtensionFiles import ExtensionsFile
+
 
 def printResult(arrayList):
     if arrayList == None or arrayList == []:
@@ -30,30 +34,47 @@ def printResult(arrayList):
         if element != None:
             print(element)
 
-def physical_info(html):
+
+def physicalInfo(html):
     zipcode = Physical(html)
-    zipcode.getCep()
     print(zipcode.getAddress())
 
-def mail_info(html):
-    emails = Mail(html)
-    printResult(emails.get_mails())
 
-def academic_info(html):
+def emailInfo(html):
+    emails = Mail(html)
+    printResult(emails.getMails())
+
+
+def academicInfo(html):
     curriculo = Lattes(html)
-    printResult(curriculo.get_lattes())
+    print(curriculo.html)
+    printResult(curriculo.getLattes())
+
+
+def imagesInfo(html, url):
+    images = Images(html)
+    images = images.getImages(url)
+    printResult(images)
+
 
 url = Getopt.requiredArgs(argv, ['-s', '--site']).strip()
 
 try:
-    html = urlopen(url)
+    html = requests.get(url)
+    html = html.text
 except HTTPError as error:
-    print('Erro de requisição para: '+ url + '.Erro: ' + error)
+    print('Erro de requisição para: ' + url + '.Erro: ' + error)
     exit()
 
-gettag = BeautifulSoup(html.read(), 'lxml').prettify()
+# For regex search - String return
+beautifulHTML = BeautifulSoup(html, 'html.parser').prettify()
+
+# For BeautifulSoup search - encoding string return
+codingHTML = BeautifulSoup(html, 'html.parser')
+
 print("URL analisada: " + url + '\n')
 
-mail_info(gettag)
-academic_info(gettag)
-physical_info(gettag)
+emailInfo(beautifulHTML)
+academicInfo(beautifulHTML)
+imagesInfo(codingHTML, url)
+physicalInfo(beautifulHTML)

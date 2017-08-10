@@ -1,11 +1,12 @@
 from re import sub
 from re import findall
 
-class Lattes():
+
+class Lattes:
     def __init__(self, html):
         self.html = html
 
-    def get_lattes(self):
+    def getLattes(self):
         all_lattes = findall('http://lattes.cnpq.br/[0-9]{15}', self.html)
         lattes_list = []
         for lattes in all_lattes:

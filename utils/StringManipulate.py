@@ -1,6 +1,7 @@
 from re import sub
-class StringManipulate():
 
+
+class StringManipulate():
     @staticmethod
     def inverseReplace(text, word, replaced):
         parts = text.split(word)
@@ -8,4 +9,4 @@ class StringManipulate():
 
     @staticmethod
     def removeNonNumbers(string):
-            return sub("[^0-9]", "", string)
+        return sub("[^0-9]", "", string)

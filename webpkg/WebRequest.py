@@ -1,6 +1,11 @@
-class observer():
+import random
+import requests
+from json import loads
+
+
+class WebRequest:
     @staticmethod
-    def random_user_agent():
+    def randomUserAgent():
         user_agent = [
             'AppleWebKit/537.36 (KHTML, like Gecko)',
             'Mozilla/4.0 (compatible; MSIE 7.0; America Online Browser 1.1; Windows NT 5.1; (R1 1.5); .NET CLR 2.0.50727; InfoPath.1)',
@@ -16,4 +21,13 @@ class observer():
             'Mozilla/5.0 (BlackBerry; U; BlackBerry 9900; en) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.1.0.346 Mobile Safari/534.11+',
             'Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30'
         ]
-        return ''.join(random.sample(user_agent,1))
+        return ''.join(random.sample(user_agent, 1))
+
+    @staticmethod
+    def getJsonFromLink(url):
+        request = requests.get(url)
+        if request.status_code == 200:
+            json = request.text
+            json = loads(json)
+            return json
+        return None
