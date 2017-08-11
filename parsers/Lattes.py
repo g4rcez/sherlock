@@ -3,12 +3,14 @@ from re import findall
 from utils.UrlUtils import UrlUtils
 
 class Lattes:
-    def __init__(self, html):
-        self.__setHTML(html)
+    def __init__(self):
         self._lattes = []
 
     def getHTML(self):
         return self._html
+
+    def setHTML(self, html):
+        self.__setHTML(html)
 
     def __setHTML(self, html):
         self._html = html
@@ -19,7 +21,8 @@ class Lattes:
                 self._lattes.append(link)
         self._lattes.sort()
 
-    def setLattes(self):
+    def setLattes(self, html):
+        self.setHTML(html)
         all_lattes = findall('http://lattes.cnpq.br/[0-9]{15}', self.getHTML())
         lattes_list = []
         for lattes in all_lattes:

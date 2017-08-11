@@ -25,7 +25,14 @@ class WebRequest:
 
     @staticmethod
     def getJsonFromLink(url):
-        request = requests.get(url)
+        request = requests.get(url, headers=WebRequest.makeHeaderHTTP(url))
         if request.status_code == 200:
             return loads(request.text)
         return None
+
+    @staticmethod
+    def makeHeaderHTTP(url, referer = 'www.google.com'):
+        return {
+            'user-agent' : WebRequest.randomUserAgent(),
+            'referer' : referer,
+        }

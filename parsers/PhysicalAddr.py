@@ -4,14 +4,17 @@ from utils.StringManipulate import StringManipulate
 
 
 class Physical:
-    def __init__(self, html):
-        self._html = html
+    def __init__(self):
         self._json = None
         self._ceps = []
-        self._cep = self.setCep()
+        self._cep = ''
+        self._address = []
 
     def getHTML(self):
         return self._html
+
+    def setHTML(self, html):
+        self._html = html
 
     def setJson(self, json):
         self._json = json
@@ -25,7 +28,8 @@ class Physical:
     def _allCeps(self, string):
         self._ceps.append(string)
 
-    def setCep(self):
+    def setCep(self, html):
+        self.setHTML(html)
         cepList = findall(r'[0-9]{5}-[0-9]{3}', self.getHTML())
         ceps = []
         if len(cepList) > 0:
@@ -62,3 +66,8 @@ class Physical:
 
     def getAddress(self):
         return '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+
+    def setFullAddress(self):
+        tmp = '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+        if tmp not in self._address:
+            self._address.append(tmp)

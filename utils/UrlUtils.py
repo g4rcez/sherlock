@@ -38,3 +38,9 @@ class UrlUtils:
             if requests.get(url).status_code == 200:
                 return True
         return False
+
+    @staticmethod
+    def assertSiteWithFile(url, uri):
+        if url[-1] == '/':
+            return url + uri
+        return url + '/' + uri

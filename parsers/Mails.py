@@ -3,8 +3,7 @@ from re import findall
 
 
 class Mail:
-    def __init__(self, html):
-        self.setHTML(html)
+    def __init__(self):
         self._emails = []
 
     def getHTML(self):
@@ -19,7 +18,8 @@ class Mail:
                 self._emails.append(email)
         self._emails.sort()
 
-    def setEmails(self):
+    def setEmails(self, html):
+        self.setHTML(html)
         emails = findall('[A-Za-z+_.]+@[A-Za-z]+\..*', self.getHTML())
         maillist = []
         if len(emails) > 0:

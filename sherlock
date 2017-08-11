@@ -17,10 +17,12 @@ except:
     if vaiInstalar in ('Y', 'y', 's', 'S'):
         system("sudo pip3 install -r requirements.txt")
     else:
+        print('Sem os requisitos fica díficil, amigo...')
         exit()
 
 # My imports
 from parsers.Mails import Mail
+from parsers.Files import Files
 from utils.Bouncer import Bouncer
 from parsers.Images import Images
 from parsers.Lattes import Lattes
@@ -42,11 +44,15 @@ uri = ''
 html = ''
 url = Getopt.requiredArgs(argv, ['-s', '--site']).strip()
 bouncer = Bouncer(url)
-
+zipcode = Physical()
+image = Images()
+curriculo = Lattes()
+emails = Mail()
+files = Files()
 
 while uri != None:
     try:
-        bouncer.setWordlist('light_wordlist.list')
+        bouncer.setWordlist('light_wordlist.txt')
         uri = bouncer.getCurrentWordFromWordlist()
         if uri is None:
             break
@@ -62,15 +68,12 @@ while uri != None:
         codingHTML = BeautifulSoup(html, 'html.parser')
 
         print("URL analisada: " + url + uri)
-
-        emails = Mail(html)
-        image = Images(codingHTML)
-        curriculo = Lattes(beautifulHTML)
-        zipcode = Physical(beautifulHTML)
-
-        image.setImages(url + uri)
-        curriculo.setLattes()
-        emails.setEmails()
+        zipcode.setCep(beautifulHTML)
+        zipcode.setFullAddress()
+        emails.setEmails(beautifulHTML)
+        curriculo.setLattes(beautifulHTML)
+        image.setImages(codingHTML, url + uri)
+        files.setFiles(codingHTML, url + uri)
 print()
 position = Server('www.' + bouncer.getDomain())
 print(bouncer.getDomain())
@@ -79,3 +82,4 @@ print(position.getGeoLocation())
 printResult(emails.getEmails())
 printResult(curriculo.getLattes())
 printResult(image.getImages())
+printResult(files.getFiles())
