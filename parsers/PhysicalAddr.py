@@ -5,43 +5,60 @@ from utils.StringManipulate import StringManipulate
 
 class Physical:
     def __init__(self, html):
-        self.html = html
-        self.json = ''
-        self.cep = ''
+        self._html = html
+        self._json = None
+        self._ceps = []
+        self._cep = self.setCep()
+
+    def getHTML(self):
+        return self._html
+
+    def setJson(self, json):
+        self._json = json
+
+    def getJson(self):
+        return self._json
 
     def getCep(self):
-        cepList = findall(r'[0-9]{5}-[0-9]{3}', self.html)
+        return self._ceps[-1]
+
+    def _allCeps(self, string):
+        self._ceps.append(string)
+
+    def setCep(self):
+        cepList = findall(r'[0-9]{5}-[0-9]{3}', self.getHTML())
         ceps = []
-        if len(cepList) > 1:
+        if len(cepList) > 0:
             cepList.sort()
             for cep in cepList:
                 if cep not in ceps:
                     ceps.append(cep)
             for maybecep in ceps:
                 cep = StringManipulate.removeNonNumbers(maybecep)
-                self.json = WebRequest.getJsonFromLink('http://api.postmon.com.br/v1/cep/' + cep)
-                if self.json is None:
-                    self.cep = cep
-                    return cep
+                self.setJson(WebRequest.getJsonFromLink('http://api.postmon.com.br/v1/cep/' + cep))
+                if self.getJson() is not None:
+                    self._cep = cep
+                    self._allCeps(cep)
+                    return self.getCep()
         return None
 
     def getBairro(self):
-        return self.json['bairro']
+        return self.getJson()['bairro']
 
     def getCidade(self):
-        return self.json['cidade']
+        return self.getJson()['cidade']
 
     def getLogradouro(self):
-        return self.json['logradouro']
+        return self.getJson()['logradouro']
 
     def getEstadoSigla(self):
-        return self.json['estado']
+        return self.getJson()['estado']
 
     def getEstado(self):
-        return self.json['estado_info']['nome']
+        return self.getJson()['estado_info']['nome']
 
     def getComplemento(self):
-        return self.json['complemento']
+        return self.getJson()['complemento']
 
     def getAddress(self):
-        return '[' + self.cep + ']' + self.getLogradouro() + '(' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+        return '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()

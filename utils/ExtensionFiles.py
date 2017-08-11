@@ -1,7 +1,7 @@
 class ExtensionsFile():
 
     @staticmethod
-    def getExtension(file):
+    def hasExtension(file):
         extensions = [
             'jpg', 'jpeg', 'pdf', 'png', 'mp3', 'mp4', 'avi', 'docx', 'doc', 'odt',
             'txt', 'py', 'html', 'php', 'jsp', 'gif', 'cgi', 'pl', 'js', 'css', 'asp',

@@ -27,7 +27,5 @@ class WebRequest:
     def getJsonFromLink(url):
         request = requests.get(url)
         if request.status_code == 200:
-            json = request.text
-            json = loads(json)
-            return json
+            return loads(request.text)
         return None

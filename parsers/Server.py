@@ -1,0 +1,41 @@
+from re import sub
+from socket import gethostbyname
+from utils.UrlUtils import UrlUtils
+from webpkg.WebRequest import WebRequest
+
+
+class Server:
+    def __init__(self, url):
+        self._allips = []
+        self.__setIp(url)
+        self.__setJson(self.getIp())
+
+    def __setIp(self, url):
+        if UrlUtils.containsHTTP:
+            url = url.replace('http://','')
+            url = url.replace('https://','')
+            url = sub('/.*','',url)
+            self.__listOfIps(gethostbyname(url))
+        else:
+            self.__listOfIps(gethostbyname(url))
+
+    def getIp(self):
+        return self._allips[-1]
+
+    def getJson(self):
+        return self._json
+
+    def __setJson(self, ip):
+        self._json = WebRequest.getJsonFromLink('http://freegeoip.net/json/' + ip)
+
+    def getLatitude(self):
+        return self.getJson()['latitude']
+
+    def getlongitude(self):
+        return self.getJson()['longitude']
+
+    def getGeoLocation(self):
+        return "http://maps.google.com/?q=" + str(self.getLatitude()) + ',' + str(self.getlongitude())
+
+    def __listOfIps(self, string):
+        self._allips.append(string)

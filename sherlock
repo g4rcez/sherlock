@@ -5,6 +5,7 @@
 from sys import argv
 from os import system
 
+
 try:
     import requests
     from bs4 import BeautifulSoup
@@ -20,8 +21,10 @@ except:
 
 # My imports
 from parsers.Mails import Mail
+from utils.Bouncer import Bouncer
 from parsers.Images import Images
 from parsers.Lattes import Lattes
+from parsers.Server import Server
 from utils.Arguments import Getopt
 from parsers.PhysicalAddr import Physical
 from utils.ExtensionFiles import ExtensionsFile
@@ -35,46 +38,44 @@ def printResult(arrayList):
             print(element)
 
 
-def physicalInfo(html):
-    zipcode = Physical(html)
-    print(zipcode.getAddress())
-
-
-def emailInfo(html):
-    emails = Mail(html)
-    printResult(emails.getMails())
-
-
-def academicInfo(html):
-    curriculo = Lattes(html)
-    print(curriculo.html)
-    printResult(curriculo.getLattes())
-
-
-def imagesInfo(html, url):
-    images = Images(html)
-    images = images.getImages(url)
-    printResult(images)
-
-
+uri = ''
+html = ''
 url = Getopt.requiredArgs(argv, ['-s', '--site']).strip()
+bouncer = Bouncer(url)
 
-try:
-    html = requests.get(url)
-    html = html.text
-except HTTPError as error:
-    print('Erro de requisição para: ' + url + '.Erro: ' + error)
-    exit()
 
-# For regex search - String return
-beautifulHTML = BeautifulSoup(html, 'html.parser').prettify()
+while uri != None:
+    try:
+        bouncer.setWordlist('light_wordlist.list')
+        uri = bouncer.getCurrentWordFromWordlist()
+        if uri is None:
+            break
+        request = requests.get(url + uri)
+        html = request.text
+    except HTTPError as error:
+        print('Erro de requisição para: ' + url + uri + '.Erro: ' + error)
 
-# For BeautifulSoup search - encoding string return
-codingHTML = BeautifulSoup(html, 'html.parser')
+    if request.status_code == 200:
+        # For regex search - String return
+        beautifulHTML = BeautifulSoup(html, 'html.parser').prettify()
+        # For BeautifulSoup search - encoding string return
+        codingHTML = BeautifulSoup(html, 'html.parser')
 
-print("URL analisada: " + url + '\n')
+        print("URL analisada: " + url + uri)
 
-emailInfo(beautifulHTML)
-academicInfo(beautifulHTML)
-imagesInfo(codingHTML, url)
-physicalInfo(beautifulHTML)
+        emails = Mail(html)
+        image = Images(codingHTML)
+        curriculo = Lattes(beautifulHTML)
+        zipcode = Physical(beautifulHTML)
+
+        image.setImages(url + uri)
+        curriculo.setLattes()
+        emails.setEmails()
+print()
+position = Server('www.' + bouncer.getDomain())
+print(bouncer.getDomain())
+print(zipcode.getAddress())
+print(position.getGeoLocation())
+printResult(emails.getEmails())
+printResult(curriculo.getLattes())
+printResult(image.getImages())

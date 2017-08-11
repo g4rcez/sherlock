@@ -34,7 +34,7 @@ class UrlUtils:
 
     @staticmethod
     def isValidUrl(url):
-        if UrlUtils.containsWWW(url) and UrlUtils.containsHTTP(url):
+        if UrlUtils.containsHTTP(url):
             if requests.get(url).status_code == 200:
                 return True
         return False

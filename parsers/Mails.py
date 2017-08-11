@@ -4,10 +4,23 @@ from re import findall
 
 class Mail:
     def __init__(self, html):
-        self.html = html
+        self.setHTML(html)
+        self._emails = []
 
-    def getMails(self):
-        emails = findall('[A-Za-z+_.]+@[A-Za-z]+\..*', self.html)
+    def getHTML(self):
+        return self._html
+
+    def setHTML(self, html):
+        self._html = html
+
+    def __setEmailsForList(self, arrayList):
+        for email in arrayList:
+            if email not in self._emails:
+                self._emails.append(email)
+        self._emails.sort()
+
+    def setEmails(self):
+        emails = findall('[A-Za-z+_.]+@[A-Za-z]+\..*', self.getHTML())
         maillist = []
         if len(emails) > 0:
             for links in emails:
@@ -15,6 +28,7 @@ class Mail:
                     email = sub(r'".*', '', str(links))
                     email = sub(r"'.*", '', email).strip()
                     maillist.append(email)
-            maillist.sort()
-            return maillist
-        return None
+            self.__setEmailsForList(maillist)
+
+    def getEmails(self):
+        return self._emails
