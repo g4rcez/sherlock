@@ -1,0 +1,147 @@
+#!/usr/bin/python3
+# coding: utf-8
+
+# Imports Python
+from sys import argv
+from os import system
+
+
+def bringTrue(choice):
+    choice = choice.upper().strip()
+    if choice == "Y" or choice == "S":
+        return True
+    return False
+
+
+try:
+    import requests
+    from bs4 import BeautifulSoup
+    from urllib.request import urlopen
+    from urllib.error import HTTPError
+except:
+    print("Deseja instalar os requisitos faltantes? [Y/n]")
+    vaiInstalar = input('-> ')
+    if bringTrue(vaiInstalar):
+        system("sudo pip3 install -r requirements.txt")
+    else:
+        print('Sem os requisitos fica díficil, amigo...')
+        exit()
+
+# My imports
+from parsers.Mails import Mail
+from parsers.Files import Files
+from utils.Bouncer import Bouncer
+from parsers.Images import Images
+from parsers.Lattes import Lattes
+from parsers.Server import Server
+from utils.Arguments import Getopt
+from parsers.PhysicalAddr import Physical
+from utils.ExtensionFiles import ExtensionsFile
+from webpkg.WebRequest import WebRequest
+
+
+def printResult(arrayList):
+    if arrayList == None or arrayList == []:
+        return None
+    for element in arrayList:
+        if element != None:
+            print(element)
+
+
+def foundLinksInPage(uri, codingHTML, bouncer):
+    linksFound = bouncer.searchAndAddLinksFromMain(codingHTML, bouncer.getDomain())
+    for newlink in linksFound:
+        if newlink not in uri and not ExtensionsFile.hasExtension(newlink):
+            uri.append(newlink)
+    return
+
+
+uri = ''
+html = ''
+url = Getopt.requiredArgs(argv, ['-t', '--target']).strip()
+limit = ''
+if Getopt.getOpt(argv, ['-l', '--limit']):
+    limit = int(Getopt.getOptAndValue(argv, ['-l', '--limit']).strip())
+else:
+    limit = False
+wordlistOpt = Getopt.getOpt(argv, ['-w','--wordlist'])
+bothThem = Getopt.getOpt(argv, ['-b','--both'])
+wordlist=''
+saltos = limit
+bouncer = Bouncer(url)
+zipcode = Physical()
+image = Images()
+curriculo = Lattes()
+emails = Mail()
+files = Files()
+
+uri = [url]
+if wordlistOpt:
+    wordlist = Getopt.getOptAndValue(argv, ['-w','--wordlist']).strip()
+    bouncer.setWordlist(wordlist)
+    while(uri[-1] != None):
+        try:
+            if Getopt.getOpt(argv, ['-s','--subdomain']):
+                subdomain = 'http://' + bouncer.getCurrentWordFromWordlist() + '.' + bouncer.getDomain()
+                uri.append(subdomain.strip())
+            add = url + bouncer.getCurrentWordFromWordlist()
+            uri.append(add.strip())
+        except TypeError:
+            break
+
+list(filter(None.__ne__, uri))
+
+for link in uri:
+    try:
+        request = requests.get(link, headers = WebRequest.makeHeaderHTTP(link, link))
+        html = request.text
+        if request.status_code == 200:
+            beautifulHTML = BeautifulSoup(html, 'html.parser').prettify()
+            codingHTML = BeautifulSoup(html, 'html.parser')
+
+            if bothThem:
+                uri.append(foundLinksInPage(uri, codingHTML, bouncer))
+            elif wordlistOpt:
+                pass
+            else:
+                uri.append(foundLinksInPage(uri, codingHTML, bouncer))
+
+            zipcode.setCep(beautifulHTML)
+            zipcode.setFullAddress()
+            emails.setEmails(beautifulHTML)
+            curriculo.setLattes(beautifulHTML)
+            image.setImages(codingHTML, link)
+            files.setFiles(codingHTML, link)
+            print('Informação sobre: ' + link)
+            print('Emails encontrados até o momento: ' + str(len(emails.getEmails())))
+            print('Lattes encontrados até o momento: ' + str(len(curriculo.getLattes())))
+            print('Imagens encontradas até o momento: ' + str(len(image.getImages())))
+            print('Arquivos encontrados até o momento: ' + str(len(files.getFiles())))
+            print('--------------------------------------------------------')
+            saltos -= 1
+            if saltos == 0:
+                saltos = limit
+                print('Deseja continuar com as buscas?[Y/n]')
+                doContinue = input('-> ')
+                if not bringTrue(doContinue):
+                    break
+    except requests.ConnectionError as error:
+        continue
+    except requests.exceptions.MissingSchema:
+        continue
+
+print()
+print('Fim da análise recursiva...')
+position = Server('www.' + bouncer.getDomain())
+print(bouncer.getDomain())
+print()
+print(zipcode.getAddress())
+print()
+print(position.getGeoLocation())
+print()
+printResult(emails.getEmails())
+print()
+printResult(curriculo.getLattes())
+print()
+printResult(image.getImages())
+printResult(files.getFiles())

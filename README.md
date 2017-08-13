@@ -19,6 +19,15 @@ Começou no intuito de estudar a biblioteca do Python [BeautifulSoup 4](https://
 
 ---
 
+### Guia do Programa
+Este script possui uma lista (que tende a crescer) de parâmetros de uso, para
+mais informações, leia o [Manual do Usuário]() para entender melhor como funciona
+cada um desses parâmetros
+
+#### **[Manual]()**
+
+---
+
 ### Dependências
 Por enquanto, estas são parciais e tendem a crescer conforme o projeto tomar seu devido rumo. Abaixo, um guia para comandos de instalação (Somente Linux, não tenho condições de manter licença Windows e a família não gosta de saber que uso seus PCs para desenvolvimento):
 
@@ -48,3 +57,4 @@ As dependências também podem ser encontradas no arquivo requirements.txt, e ca
 3. [Python 3.6.2 documentation](https://docs.python.org/3/)
 4. [WordPress Accepted Files](https://en.support.wordpress.com/accepted-filetypes/)
 5. [Estrutura do CEP ](https://www.correios.com.br/para-voce/precisa-de-ajuda/o-que-e-cep-e-por-que-usa-lo/estrutura-do-cep)
+6. [Extensions in Web](https://stackoverflow.com/questions/1614520/what-are-common-file-extensions-for-web-programming-languages)

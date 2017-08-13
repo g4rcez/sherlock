@@ -1,4 +1,3 @@
-
 about
 admin
 administrador
@@ -190,3 +189,6 @@ darthvader
 darth_vader
 anakyn
 obiwan
+odin
+thor
+loki

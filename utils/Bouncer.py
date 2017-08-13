@@ -9,6 +9,7 @@ class Bouncer:
         self._path = ''
         self._currentLine = 0
         self._fileLines = ''
+        self._allpages = []
 
     def __setDomain(self, domain):
         tmp = domain
@@ -47,3 +48,11 @@ class Bouncer:
         if self._currentLine < self._fileLines:
             return linecache.getline(self.getWordlist(), self._currentLine).replace('\n','')
         return None
+
+    def searchAndAddLinksFromMain(self, html, url):
+        urls = []
+        for link in html.findAll('a', href = True):
+            page = link['href']
+            if url in page:
+                urls.append(page)
+        return urls

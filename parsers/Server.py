@@ -11,16 +11,22 @@ class Server:
         self.__setJson(self.getIp())
 
     def __setIp(self, url):
-        if UrlUtils.containsHTTP:
-            url = url.replace('http://','')
-            url = url.replace('https://','')
-            url = sub('/.*','',url)
-            self.__listOfIps(gethostbyname(url))
-        else:
-            self.__listOfIps(gethostbyname(url))
+        try:
+            if UrlUtils.containsHTTP:
+                url = url.replace('http://','')
+                url = url.replace('https://','')
+                url = sub('/.*','',url)
+                self.__listOfIps(gethostbyname(url))
+            else:
+                self.__listOfIps(gethostbyname(url))
+        except:
+            pass
 
     def getIp(self):
-        return self._allips[-1]
+        try:
+            return self._allips[-1]
+        except:
+            return ''
 
     def getJson(self):
         return self._json
@@ -35,7 +41,10 @@ class Server:
         return self.getJson()['longitude']
 
     def getGeoLocation(self):
-        return "http://maps.google.com/?q=" + str(self.getLatitude()) + ',' + str(self.getlongitude())
+        try:
+            return "http://maps.google.com/?q=" + str(self.getLatitude()) + ',' + str(self.getlongitude())
+        except:
+            return ''
 
     def __listOfIps(self, string):
         self._allips.append(string)

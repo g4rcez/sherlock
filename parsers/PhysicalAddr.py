@@ -23,7 +23,10 @@ class Physical:
         return self._json
 
     def getCep(self):
-        return self._ceps[-1]
+        try:
+            return self._ceps[-1]
+        except:
+            return None
 
     def _allCeps(self, string):
         self._ceps.append(string)
@@ -65,9 +68,15 @@ class Physical:
         return self.getJson()['complemento']
 
     def getAddress(self):
-        return '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+        try:
+            return '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+        except:
+            return ''
 
     def setFullAddress(self):
-        tmp = '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
-        if tmp not in self._address:
-            self._address.append(tmp)
+        try:
+            tmp = '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+            if tmp not in self._address:
+                self._address.append(tmp)
+        except:
+            pass
