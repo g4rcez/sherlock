@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # coding: utf-8
 
+
 # Imports Python
 from sys import argv
 from os import system
@@ -53,8 +54,42 @@ def foundLinksInPage(uri, codingHTML, bouncer):
     for newlink in linksFound:
         if newlink not in uri and not ExtensionsFile.hasExtension(newlink):
             uri.append(newlink)
-    return
+    return uri
 
+
+def banner():
+    print('''\033[1;37m
+███████╗██╗  ██╗███████╗██████╗ ██╗      ██████╗  ██████╗██╗  ██╗
+██╔════╝██║  ██║██╔════╝██╔══██╗██║     ██╔═══██╗██╔════╝██║ ██╔╝
+███████╗███████║█████╗  ██████╔╝██║     ██║   ██║██║     █████╔╝
+╚════██║██╔══██║██╔══╝  ██╔══██╗██║     ██║   ██║██║     ██╔═██╗
+███████║██║  ██║███████╗██║  ██║███████╗╚██████╔╝╚██████╗██║  ██╗
+╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝╚═╝  ╚═╝\033[00m
+\033[1;37mPython WebSpider for Forensics and Stalkers\033[00m
+Developer: \033[1;37mAllan Garcez - vandalvnl\033[00m
+GitHub: \033[1;37mhttps://github.com/vandalvnl\033[00m
+Sugestões ou Bugs? Por favor reporte: \033[1;37mhttps://github.com/vandalvnl/sherlock/issues\033[00m''')
+
+
+def ajudaCara():
+    print('''\033[1;37mParâmetros de uso: python Sherlock -t site [argumentos opcionais]\033[00m\n
+\r\t-b, --both\t\tAtribui uma wordlist e os links buscados nas páginas
+\r\t-e, --extensions\tExtensões de arquivos a serem indexados* (em desenvolvimento)
+\r\t-h, --help\t\tMenu de ajuda ao usuário (Mostrado caso 3 ou menos argumentos sejam passados)
+\r\t-l, --limit\t\tLimite de requisições feitas até uma pausa.
+\r\t-s, --subdomain\t\tRealiza tentativas de subdominio(parâmetro -w obrigatório)
+\r\t-t, --target\t\tPágina raiz do site a ser analisado.
+\r\t-w, --wordlist\t\tWordlist para tentativa de bruteforce
+\n\r*Extensões reconhecidas pelo programa:
+\tjpg, jpeg, pdf, png, mp3, mp4, avi, docx, doc, odt, txt,gif, js,
+\tcss, csv, exe, mov, psd, tar, zip, wav, xml, xsl, ppt, pptx, m4a,
+\togg, m4v, ogv, 3gp, mpg, 3gp, xls\n''')
+
+banner()
+if len(argv) < 3:
+    ajudaCara()
+elif ('-h','--help') in argv:
+    ajudaCara()
 
 uri = ''
 html = ''
@@ -95,7 +130,7 @@ for link in uri:
     try:
         request = requests.get(link, headers = WebRequest.makeHeaderHTTP(link, link))
         html = request.text
-        if request.status_code == 200:
+        if WebRequest.isActiveLink(link):
             beautifulHTML = BeautifulSoup(html, 'html.parser').prettify()
             codingHTML = BeautifulSoup(html, 'html.parser')
 
@@ -107,7 +142,6 @@ for link in uri:
                 uri.append(foundLinksInPage(uri, codingHTML, bouncer))
 
             zipcode.setCep(beautifulHTML)
-            zipcode.setFullAddress()
             emails.setEmails(beautifulHTML)
             curriculo.setLattes(beautifulHTML)
             image.setImages(codingHTML, link)
@@ -125,23 +159,25 @@ for link in uri:
                 doContinue = input('-> ')
                 if not bringTrue(doContinue):
                     break
-    except requests.ConnectionError as error:
+    except (requests.ConnectionError, requests.exceptions.MissingSchema):
         continue
-    except requests.exceptions.MissingSchema:
-        continue
+    except KeyboardInterrupt:
+        break
 
 print()
 print('Fim da análise recursiva...')
 position = Server('www.' + bouncer.getDomain())
 print(bouncer.getDomain())
 print()
-print(zipcode.getAddress())
+for cep in zipcode.getAllCeps():
+    print(zipcode.getAddress(cep))
 print()
 print(position.getGeoLocation())
 print()
 printResult(emails.getEmails())
 print()
-printResult(curriculo.getLattes())
-print()
+if len(curriculo.getLattes()) > 0:
+    printResult(curriculo.getLattes())
+    print()
 printResult(image.getImages())
 printResult(files.getFiles())

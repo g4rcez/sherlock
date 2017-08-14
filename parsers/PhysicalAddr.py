@@ -7,7 +7,6 @@ class Physical:
     def __init__(self):
         self._json = None
         self._ceps = []
-        self._cep = ''
         self._address = []
 
     def getHTML(self):
@@ -22,14 +21,26 @@ class Physical:
     def getJson(self):
         return self._json
 
-    def getCep(self):
+    def getLastCep(self):
         try:
             return self._ceps[-1]
         except:
             return None
 
+    def getAllCeps(self):
+        try:
+            return self._ceps
+        except:
+            return None
+
     def _allCeps(self, string):
         self._ceps.append(string)
+
+    def getCepFromWeb(self, givenCep):
+        for givenCep in self.getAllCeps():
+            self.setJson(WebRequest.getJsonFromLink('http://api.postmon.com.br/v1/cep/' + givenCep))
+            if self.getJson() is not None:
+                return givenCep
 
     def setCep(self, html):
         self.setHTML(html)
@@ -42,11 +53,9 @@ class Physical:
                     ceps.append(cep)
             for maybecep in ceps:
                 cep = StringManipulate.removeNonNumbers(maybecep)
-                self.setJson(WebRequest.getJsonFromLink('http://api.postmon.com.br/v1/cep/' + cep))
-                if self.getJson() is not None:
-                    self._cep = cep
+                if WebRequest.isActiveLink('http://api.postmon.com.br/v1/cep/' + cep) and cep not in self.getAllCeps():
                     self._allCeps(cep)
-                    return self.getCep()
+                    return self.getLastCep()
         return None
 
     def getBairro(self):
@@ -67,15 +76,15 @@ class Physical:
     def getComplemento(self):
         return self.getJson()['complemento']
 
-    def getAddress(self):
+    def getAddress(self, cep):
         try:
-            return '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+            return '[' + self.getCepFromWeb(cep) + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
         except:
             return ''
 
-    def setFullAddress(self):
+    def setFullAddress(self, cep):
         try:
-            tmp = '[' + self.getCep() + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
+            tmp = '[' + self.getCepFromWeb(cep) + '] ' + self.getLogradouro() + ' (' + self.getComplemento() + '), ' + self.getBairro() + '. ' + self.getCidade() + ', ' + self.getEstado()
             if tmp not in self._address:
                 self._address.append(tmp)
         except:

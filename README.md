@@ -24,7 +24,7 @@ Este script possui uma lista (que tende a crescer) de parâmetros de uso, para
 mais informações, leia o [Manual do Usuário]() para entender melhor como funciona
 cada um desses parâmetros
 
-#### **[Manual]()**
+#### **[docs/Manual.md](docs/Manual.md)**
 
 ---
 

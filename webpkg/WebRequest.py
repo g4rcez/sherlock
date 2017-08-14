@@ -36,3 +36,9 @@ class WebRequest:
             'user-agent' : WebRequest.randomUserAgent(),
             'referer' : referer,
         }
+
+    def isActiveLink(link):
+        request = requests.get(link)
+        if request.status_code == 200:
+            return True
+        return False
