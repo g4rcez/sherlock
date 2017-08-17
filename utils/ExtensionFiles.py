@@ -1,21 +1,19 @@
-class ExtensionsFile():
-
+class ExtensionsFile:
     @staticmethod
     def hasExtension(file):
         extensions = [
             'jpg', 'jpeg', 'pdf', 'png', 'mp3', 'mp4', 'avi', 'docx', 'doc', 'odt',
-            'txt', 'gif', 'js', 'css', 'asp','csv', 'exe', 'mov', 'psd', 'tar',
+            'txt', 'gif', 'js', 'css', 'asp', 'csv', 'exe', 'mov', 'psd', 'tar',
             'zip', 'wav', 'xml', 'xsl', 'ppt', 'pptx', 'm4a', 'ogg', 'm4v',
             'ogv', '3gp', 'mpg', '3gp', 'xls'
         ]
         try:
-            ext = file.split('.')
-            ext = ext[-1]
-            if ext in extensions:
-                return True
-            return False
+            ext = file.split('.')[-1]
         except:
             return False
+        if ext in extensions:
+            return True
+        return False
 
     @staticmethod
     def extensionForWebPage(file):
@@ -25,10 +23,9 @@ class ExtensionsFile():
             'shtml', 'cgi', 'dll', 'asx'
         ]
         try:
-            ext = file.split('.')
-            ext = ext[-1]
-            if ext in extensions:
-                return True
-            return False
+            ext = file.split('.')[-1]
         except:
             return False
+        if ext in extensions:
+            return True
+        return False

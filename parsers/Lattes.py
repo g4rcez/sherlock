@@ -2,6 +2,7 @@ from re import sub
 from re import findall
 from utils.UrlUtils import UrlUtils
 
+
 class Lattes:
     def __init__(self):
         self._lattes = []
@@ -26,7 +27,7 @@ class Lattes:
         lattes_list = []
         for lattes in all_lattes:
             latte = sub('".*', '', lattes)
-            latte = sub(".*'", '', latte)
+            latte = sub(".*'", '', latte).strip()
             lattes_list.append(latte)
         self.__setLinksForLattes(lattes_list)
 

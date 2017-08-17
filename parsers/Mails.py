@@ -1,6 +1,6 @@
 from re import sub
 from re import findall
-
+from utils.StringManipulate import StringManipulate
 
 class Mail:
     def __init__(self):
@@ -25,8 +25,11 @@ class Mail:
             for links in emails:
                 email = sub(r'".*', '', str(links))
                 email = sub(r"'.*", '', email).strip()
-                maillist.append(email)
+                email = StringManipulate.removeSpecifieds(email, [
+                    '<br>','<','>','\\','/','?','(',')','{','}','"',"'",',',';'
+                ])
+                maillist.append(email.split(' ')[0])
             self.__setEmailsForList(maillist)
 
     def getEmails(self):
-        return self._emails
+        return list(set(self._emails))

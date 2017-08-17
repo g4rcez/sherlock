@@ -18,7 +18,7 @@ class PageCreator:
         return self._address
 
     def setFileNameAndDirectory(self, fileName):
-        fileName = fileName.replace('.html','')
+        fileName = fileName.replace('.html', '')
         self._file = f'{fileName}.html'
 
     def setDomain(self, domain):
@@ -51,7 +51,7 @@ class PageCreator:
                 \r</head>
                 \r<h1 class="text-center"><i class="fa fa-globe" aria-hidden="true"></i> Domain: ''' + self.getDomain() + '''</h1>
                 \r<h4 class="text-center"><i class="fa fa-server" aria-hidden="true"></i> IP: ''' + self.getIp() + '''</h4>
-                <a href="index_{self.getFile()}Página Principal</a>"'''
+                \r<a href="index_{self.getFile()}Página Principal</a>"'''
 
     def footerHTML(self):
         return f'''\r<br><br><br><footer class='text-center'>

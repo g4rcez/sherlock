@@ -16,6 +16,7 @@ def bringTrue(choice):
 
 try:
     import json
+    import time
     import requests
     from bs4 import BeautifulSoup
     from urllib.error import HTTPError
@@ -138,10 +139,11 @@ if wordlistOpt:
 
 list(filter(None.__ne__, uri))
 
+initialTime = time.time()
 for link in uri:
     try:
         try:
-            request = requests.get(link, headers=WebRequest.makeHeaderHTTP(link))
+            request = requests.get(link, headers = WebRequest.makeHeaderHTTP(link))
         except requests.exceptions.InvalidSchema:
             continue
         if WebRequest.isActiveLink(link):
@@ -179,27 +181,30 @@ for link in uri:
         continue
     except KeyboardInterrupt:
         break
+endTime = time.time()
 
 print()
-print('Fim da análise recursiva...')
+print(f'Fim da análise formatando resultados...Tempo gasto: {round(endTime-initialTime, 3)} segundos')
 try:
     position = Server('www.' + bouncer.getDomain())
 except:
     pass
-# print(bouncer.getDomain())
-# print()
-# for cep in zipcode.getAllCeps():
-#     print(zipcode.getAddress(cep))
-# print()
-# print(position.getGeoLocation())
-# print()
-# printResult(emails.getEmails())
-# print()
-# if len(curriculo.getLattes()) > 0:
-#     printResult(curriculo.getLattes())
-#     print()
-# printResult(image.getImages())
-# printResult(files.getFiles())
+
+if bringTrue(input('Deseja imprimir o resultado da analise? [S/n]')):
+    print(bouncer.getDomain())
+    print()
+    for cep in zipcode.getAllCeps():
+        print(zipcode.getAddress(cep))
+    print()
+    print(position.getGeoLocation())
+    print()
+    printResult(emails.getEmails())
+    print()
+    if len(curriculo.getLattes()) > 0:
+        printResult(curriculo.getLattes())
+        print()
+    printResult(image.getImages())
+    printResult(files.getFiles())
 
 if jsonFile is not False:
     jsonFile = jsonFile.replace('.json','')
@@ -222,7 +227,7 @@ if jsonFile is not False:
     print(f"Arquivo {jsonFile} gerado com sucesso")
 
 if Getopt.getOpt(argv, ['-H', '--html']):
-    directory = Getopt.getOptAndValue(argv, ['-H', '--HTML']).strip()
+    directory = Getopt.getOptAndValue(argv, ['-H', '--html']).strip()
     index = PageCreator(directory, bouncer.getDomain(), position.getIp(url), zipcode)
     index.createIndex(
         emails.getEmails(), curriculo.getLattes(), files.getFiles(), image.getImages(), validLinks

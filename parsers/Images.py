@@ -1,6 +1,5 @@
-import utils
-from utils.UrlUtils import UrlUtils
 from utils.ExtensionFiles import ExtensionsFile
+from utils.UrlUtils import UrlUtils
 
 
 class Images:
@@ -20,15 +19,15 @@ class Images:
         for img in imgList:
             linkToImg = img.get('src')
             if UrlUtils.containsHTTP(img.get('src')) is False:
-                    linkToImg = UrlUtils.assertSiteWithFile(url, img.get('src'))
-            images.append(linkToImg)
+                linkToImg = UrlUtils.assertSiteWithFile(url, img.get('src'))
+            images.append(linkToImg.strip())
         self.__allImages(images)
 
     def __allImages(self, arrayList):
         for img in arrayList:
             if ExtensionsFile.hasExtension(img):
-                self._imgs.append(img)
-        list(set(self._imgs))
+                self.getImages().append(img)
+        list(set(self.getImages()))
 
     def getImages(self):
         return self._imgs

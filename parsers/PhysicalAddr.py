@@ -55,8 +55,6 @@ class Physical:
                 cep = StringManipulate.removeNonNumbers(maybecep)
                 if WebRequest.isActiveLink('http://api.postmon.com.br/v1/cep/' + cep) and cep not in self.getAllCeps():
                     self._allCeps(cep)
-                    return self.getLastCep()
-        return None
 
     def getBairro(self):
         return self.getJson()['bairro']

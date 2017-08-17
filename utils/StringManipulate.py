@@ -10,3 +10,10 @@ class StringManipulate():
     @staticmethod
     def removeNonNumbers(string):
         return sub("[^0-9]", "", string)
+
+    # simbols expected a array
+    @staticmethod
+    def removeSpecifieds(string, simbols):
+        for simbol in simbols:
+            string = string.replace(simbol,'')
+        return string

@@ -5,9 +5,8 @@
 
 #### Desenvolvedor: **vandalvnl**
 **Este projeto encontra-se em desenvolvimento**
-Caso você queira contribuir, favor, criar uma Issue neste repositório com suas ideias. Caso queira colaborar com código, favor, entrar em contato pelo Telegram [vandalvnl](https://t.me/vandalvnl).
 
-*Agradecimentos a todos os envolvidos no projeto. [Lista de Colaboradores]()*
+Caso você queira contribuir, favor, criar uma Issue neste repositório com suas ideias. Caso queira colaborar com código, favor, entrar em contato pelo Telegram [vandalvnl](https://t.me/vandalvnl).
 
 ---
 
@@ -21,7 +20,7 @@ Começou no intuito de estudar a biblioteca do Python [BeautifulSoup 4](https://
 
 ### Guia do Programa
 Este script possui uma lista (que tende a crescer) de parâmetros de uso, para
-mais informações, leia o [Manual do Usuário]() para entender melhor como funciona
+mais informações, leia o [Manual do Usuário](docs/Manual.md) para entender melhor como funciona
 cada um desses parâmetros
 
 #### **[docs/Manual.md](docs/Manual.md)**
@@ -29,26 +28,14 @@ cada um desses parâmetros
 ---
 
 ### Dependências
-Por enquanto, estas são parciais e tendem a crescer conforme o projeto tomar seu devido rumo. Abaixo, um guia para comandos de instalação (Somente Linux, não tenho condições de manter licença Windows e a família não gosta de saber que uso seus PCs para desenvolvimento):
-
-**\# significa instalação em modo Root para os que não pegaram a referência, neste caso.**
-#### Arch Linux
-> \# pacman -S python3 python-pip
-
-#### Debian/Ubuntu/Kali...
-> \# apt install python3 python-pip
-
-#### Fedora/CentOS...
-> \# yum install python3 python-pip
-
-#### Após as devidas instalações, rodar o comando pip
-> \# pip install beautifulsoup4 requests
-
-As dependências também podem ser encontradas no arquivo requirements.txt, e caso você não possua suas dependências, Sherlock perguntará se você permite instalar suas dependências
-
-> \# pip install -r requirements.txt
+Por enquanto, estas são parciais e tendem a crescer conforme o projeto tomar seu devido rumo. Abaixo, um guia para comandos de instalação (Somente Linux, não tenho condições de manter licença Windows e a família não gosta de saber que uso seus PCs para desenvolvimento). Você pode conferir o [guia de instalação](docs/Install.md).
 
 ---
+### Agradecimentos
+
+1. [Equipe Postmon](https://github.com/PostmonAPI/postmon) - Sherlock obtem as informações
+de endereço através da PostmonAPI
+2. [Equipe UnameCorporation](https://github.com/unamecorporation) - Pelas ideias e reports dos bugs encontrados.
 
 ### Referências
 

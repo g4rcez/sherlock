@@ -29,8 +29,7 @@ class UrlUtils:
         if UrlUtils.containsWWW:
             return "http://" + complement.replace("\n", "") + "." + url
         else:
-            url = url.replace("www.", "")
-            return "http://" + complement.replace("\n", "") + "." + url
+            return "http://" + complement.replace("\n", "") + "." + url.replace("www.", "")
 
     @staticmethod
     def isValidUrl(url):
@@ -44,3 +43,9 @@ class UrlUtils:
         if url[-1] == '/':
             return url + uri
         return url + '/' + uri
+
+    @staticmethod
+    def externalLink(url, link):
+        if UrlUtils.containsHTTP(link) and url not in link:
+            return True
+        return False

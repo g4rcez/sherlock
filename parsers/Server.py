@@ -51,3 +51,4 @@ class Server:
 
     def __listOfIps(self, string):
         self._allips.append(string)
+        list(set(self._allips))
