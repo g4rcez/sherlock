@@ -25,7 +25,7 @@ class WebRequest:
 
     @staticmethod
     def getJsonFromLink(url):
-        request = requests.get(url, headers=WebRequest.makeHeaderHTTP(url))
+        request = requests.get(url, headers = WebRequest.makeHeaderHTTP(url))
         if request.status_code == 200:
             return loads(request.text)
         return None

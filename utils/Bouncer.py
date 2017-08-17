@@ -53,6 +53,7 @@ class Bouncer:
         urls = []
         for link in html.findAll('a', href = True):
             page = link['href']
-            if url in page:
-                urls.append(page)
+            if page[0] != '#':
+                urls.append('http://' + url + '/' + page)
+        list(set(urls))
         return urls

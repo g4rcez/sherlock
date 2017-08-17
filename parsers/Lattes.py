@@ -17,9 +17,8 @@ class Lattes:
 
     def __setLinksForLattes(self, arrayList):
         for link in arrayList:
-            if link not in self._lattes:
-                self._lattes.append(link)
-        self._lattes.sort()
+            self._lattes.append(link)
+        list(set(self._lattes))
 
     def setLattes(self, html):
         self.setHTML(html)

@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.6
 # coding: utf-8
 
 
@@ -15,10 +15,11 @@ def bringTrue(choice):
 
 
 try:
+    import json
     import requests
     from bs4 import BeautifulSoup
-    from urllib.request import urlopen
     from urllib.error import HTTPError
+    from urllib.request import urlopen
 except:
     print("Deseja instalar os requisitos faltantes? [Y/n]")
     vaiInstalar = input('-> ')
@@ -36,9 +37,10 @@ from parsers.Images import Images
 from parsers.Lattes import Lattes
 from parsers.Server import Server
 from utils.Arguments import Getopt
-from parsers.PhysicalAddr import Physical
-from utils.ExtensionFiles import ExtensionsFile
 from webpkg.WebRequest import WebRequest
+from parsers.PhysicalAddr import Physical
+from webpkg.PageCreator import PageCreator
+from utils.ExtensionFiles import ExtensionsFile
 
 
 def printResult(arrayList):
@@ -47,6 +49,7 @@ def printResult(arrayList):
     for element in arrayList:
         if element != None:
             print(element)
+
 
 
 def foundLinksInPage(uri, codingHTML, bouncer):
@@ -75,6 +78,7 @@ def ajudaCara():
     print('''\033[1;37mParâmetros de uso: python Sherlock -t site [argumentos opcionais]\033[00m\n
 \r\t-b, --both\t\tAtribui uma wordlist e os links buscados nas páginas
 \r\t-e, --extensions\tExtensões de arquivos a serem indexados* (em desenvolvimento)
+\r\t-j, --json\tGerar arquivo Json das informações capturadas (deve informar o nome do arquivo)
 \r\t-h, --help\t\tMenu de ajuda ao usuário (Mostrado caso 3 ou menos argumentos sejam passados)
 \r\t-l, --limit\t\tLimite de requisições feitas até uma pausa.
 \r\t-s, --subdomain\t\tRealiza tentativas de subdominio(parâmetro -w obrigatório)
@@ -93,15 +97,23 @@ elif ('-h','--help') in argv:
 
 uri = ''
 html = ''
-url = Getopt.requiredArgs(argv, ['-t', '--target']).strip()
 limit = ''
+wordlist=''
+jsonFile = ''
+validLinks = []
+url = Getopt.requiredArgs(argv, ['-t', '--target']).strip()
+if url[-1] != '/' and not ExtensionsFile.extensionForWebPage(url):
+    url += '/'
 if Getopt.getOpt(argv, ['-l', '--limit']):
     limit = int(Getopt.getOptAndValue(argv, ['-l', '--limit']).strip())
 else:
     limit = False
+if Getopt.getOpt(argv, ['-j', '--json']):
+    jsonFile = Getopt.getOptAndValue(argv, ['-j', '--json']).strip()
+else:
+    jsonFile = False
 wordlistOpt = Getopt.getOpt(argv, ['-w','--wordlist'])
 bothThem = Getopt.getOpt(argv, ['-b','--both'])
-wordlist=''
 saltos = limit
 bouncer = Bouncer(url)
 zipcode = Physical()
@@ -128,9 +140,12 @@ list(filter(None.__ne__, uri))
 
 for link in uri:
     try:
-        request = requests.get(link, headers = WebRequest.makeHeaderHTTP(link, link))
-        html = request.text
+        try:
+            request = requests.get(link, headers=WebRequest.makeHeaderHTTP(link))
+        except requests.exceptions.InvalidSchema:
+            continue
         if WebRequest.isActiveLink(link):
+            html = request.text
             beautifulHTML = BeautifulSoup(html, 'html.parser').prettify()
             codingHTML = BeautifulSoup(html, 'html.parser')
 
@@ -146,12 +161,13 @@ for link in uri:
             curriculo.setLattes(beautifulHTML)
             image.setImages(codingHTML, link)
             files.setFiles(codingHTML, link)
-            print('Informação sobre: ' + link)
-            print('Emails encontrados até o momento: ' + str(len(emails.getEmails())))
-            print('Lattes encontrados até o momento: ' + str(len(curriculo.getLattes())))
-            print('Imagens encontradas até o momento: ' + str(len(image.getImages())))
-            print('Arquivos encontrados até o momento: ' + str(len(files.getFiles())))
+            validLinks.append(link)
             print('--------------------------------------------------------')
+            print(f'Informação sobre: {link}')
+            print(f'Emails encontrados até o momento: {str(len(emails.getEmails()))}')
+            print(f'Lattes encontrados até o momento: {str(len(curriculo.getLattes()))}')
+            print(f'Imagens encontradas até o momento: {str(len(image.getImages()))}')
+            print(f'Arquivos encontrados até o momento: {str(len(files.getFiles()))}')
             saltos -= 1
             if saltos == 0:
                 saltos = limit
@@ -166,18 +182,54 @@ for link in uri:
 
 print()
 print('Fim da análise recursiva...')
-position = Server('www.' + bouncer.getDomain())
-print(bouncer.getDomain())
-print()
-for cep in zipcode.getAllCeps():
-    print(zipcode.getAddress(cep))
-print()
-print(position.getGeoLocation())
-print()
-printResult(emails.getEmails())
-print()
-if len(curriculo.getLattes()) > 0:
-    printResult(curriculo.getLattes())
-    print()
-printResult(image.getImages())
-printResult(files.getFiles())
+try:
+    position = Server('www.' + bouncer.getDomain())
+except:
+    pass
+# print(bouncer.getDomain())
+# print()
+# for cep in zipcode.getAllCeps():
+#     print(zipcode.getAddress(cep))
+# print()
+# print(position.getGeoLocation())
+# print()
+# printResult(emails.getEmails())
+# print()
+# if len(curriculo.getLattes()) > 0:
+#     printResult(curriculo.getLattes())
+#     print()
+# printResult(image.getImages())
+# printResult(files.getFiles())
+
+if jsonFile is not False:
+    jsonFile = jsonFile.replace('.json','')
+    jsonFile += '.json'
+    try:
+        archive = open(jsonFile, 'w')
+    except:
+        print(f'Erro ao criar arquivo {jsonFile}')
+        exit()
+    archive.write(json.dumps({
+        'emails': emails.getEmails(),
+        'lattes': curriculo.getLattes(),
+        'domain': bouncer.getDomain(),
+        'server-location': position.getGeoLocation(),
+        'address': zipcode.getAllCeps(),
+        'image': image.getImages(),
+        'files': files.getFiles()
+    }, sort_keys = True, indent = 2))
+    archive.close()
+    print(f"Arquivo {jsonFile} gerado com sucesso")
+
+if Getopt.getOpt(argv, ['-H', '--html']):
+    directory = Getopt.getOptAndValue(argv, ['-H', '--HTML']).strip()
+    index = PageCreator(directory, bouncer.getDomain(), position.getIp(url), zipcode)
+    index.createIndex(
+        emails.getEmails(), curriculo.getLattes(), files.getFiles(), image.getImages(), validLinks
+    )
+    index.createEmailsPage(emails.getEmails())
+    index.createImgPage(image.getImages())
+    index.createFilesPage(files.getFiles())
+    index.createLattesPage(curriculo.getLattes())
+    index.createUrlsPage(validLinks)
+    print("Todos os HTMLS foram gerados com sucesso")

@@ -1,0 +1,17 @@
+body{
+  font-family: 'Source Sans Pro', sans-serif;
+  color: #121212;
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-family: 'Montserrat', sans-serif;
+}
+
+.box{
+  border: 1px  groove #121212;
+  border-radius: 0;
+}
+
+.lists{
+  font-size: 1.35em;
+}

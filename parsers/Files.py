@@ -17,9 +17,9 @@ class Files:
 
 	def __setNewFilesInList(self, arrayList):
 		for thisFile in arrayList:
-			if thisFile not in self.getFiles() and ExtensionsFile.hasExtension(thisFile):
+			if ExtensionsFile.hasExtension(thisFile):
 				self._list.append(thisFile)
-		self._list.sort()
+		list(set(self._list))
 
 	def setFiles(self, html, url):
 		self.setHTML(html)

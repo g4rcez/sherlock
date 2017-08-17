@@ -8,11 +8,11 @@ class Server:
     def __init__(self, url):
         self._allips = []
         self.__setIp(url)
-        self.__setJson(self.getIp())
+        self.__setJson(self.getIp(url))
 
     def __setIp(self, url):
         try:
-            if UrlUtils.containsHTTP:
+            if UrlUtils.containsHTTP(url):
                 url = url.replace('http://','')
                 url = url.replace('https://','')
                 url = sub('/.*','',url)
@@ -22,11 +22,14 @@ class Server:
         except:
             pass
 
-    def getIp(self):
-        try:
-            return self._allips[-1]
-        except:
-            return ''
+    def getIp(self, url):
+        if UrlUtils.containsHTTP(url):
+            url = url.replace('http://','')
+            url = url.replace('https://','')
+            url = sub('/.*','',url)
+            return f'{gethostbyname(url)}'.strip()
+        else:
+            return gethostbyname(url).strip()
 
     def getJson(self):
         return self._json
