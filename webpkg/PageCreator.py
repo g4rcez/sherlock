@@ -19,7 +19,7 @@ class PageCreator:
 
     def setFileNameAndDirectory(self, fileName):
         fileName = fileName.replace('.html', '')
-        self._file = f'{fileName}.html'
+        self._file = fileName + '.html'
 
     def setDomain(self, domain):
         self._domain = domain
@@ -54,7 +54,7 @@ class PageCreator:
                 \r<a href="index_{self.getFile()}Página Principal</a>"'''
 
     def footerHTML(self):
-        return f'''\r<br><br><br><footer class='text-center'>
+        return '''\r<br><br><br><footer class='text-center'>
                 \r<h4>Relatório do Fluxo de Informação encontrado por
                 \r<a href="https://github.com/vandalvnl/sherlock">Sherlock</a></h4>
                 \r<a href="https://github.com/vandalvnl/">Desenvolvedor: Allan Garcez - Vandalvnl</a><br><br>
@@ -65,21 +65,21 @@ class PageCreator:
                 \r</html>'''
 
     def createIndex(self, arrayListEmail, arrayListLattes, arrayListLinks, arrayListImage, urls):
-        index = open(f'index_{self.getFile()}', 'w')
+        index = open('index_'+self.getFile(), 'w')
         index.write(self.headerHTML())
         index.write(
-            f'''\r<div id="wrapper">
+            '''\r<div id="wrapper">
             \r<div class="container text-center">
             \r<div class="row">
             \r<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
             \r<h2 class="text-center">Índice de informações obtidas</h2>
             \r<p>
             \r<ul>
-            \r<li><a href="files_{self.getFile()}" class="lists">Arquivos encontrados: {len(arrayListLinks)}</a></li>
-            \r<li><a href="emails_{self.getFile()}" class="lists">Emails encontrados: {len(arrayListEmail)}</a></li>
-            \r<li><a href="lattes_{self.getFile()}" class="lists">Lattes encontrados: {len(arrayListLattes)}</a></li>
-            \r<li><a href="img_{self.getFile()}" class="lists">Imagens encontradas: {len(arrayListImage)}</a></li>
-            \r<li><a href="urls_{self.getFile()}" class="lists">Urls encontradas: {len(urls)}</a></li>
+            \r<li><a href="files_{self.getFile()}" class="lists">Arquivos encontrados: ''' + len(arrayListLinks) + '''</a></li>
+            \r<li><a href="emails_{self.getFile()}" class="lists">Emails encontrados: '''+len(arrayListEmail)+'''</a></li>
+            \r<li><a href="lattes_{self.getFile()}" class="lists">Lattes encontrados: '''+len(arrayListLattes)+'''</a></li>
+            \r<li><a href="img_{self.getFile()}" class="lists">Imagens encontradas: '''+len(arrayListImage)+'''</a></li>
+            \r<li><a href="urls_{self.getFile()}" class="lists">Urls encontradas: '''+len(urls)+'''</a></li>
             \r</ul>
             \r<div class="text-center">
             \r<p>'''
@@ -87,7 +87,7 @@ class PageCreator:
         for cep in self.getAddress().getAllCeps():
             self.getAddress().setFullAddress(cep)
             index.write(
-                f'\r{self.getAddress().getAddress(cep)}<br>'
+                '\r'+self.getAddress().getAddress(cep)+'<br>'
             )
         index.write('''\r</div>
             \r</p>
@@ -100,10 +100,10 @@ class PageCreator:
         index.close()
 
     def createEmailsPage(self, arrayListEmail):
-        index = open(f'emails_{self.getFile()}' , 'w')
+        index = open('emails_'+self.getFile() , 'w')
         index.write(self.headerHTML())
         index.write(
-            f'''\r<div id="wrapper">
+            '''\r<div id="wrapper">
             \r<div class="container text-center">
             \r<div class="row">
             \r<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
@@ -113,13 +113,13 @@ class PageCreator:
         )
         for email in arrayListEmail:
             index.write(
-                f'''\r<li>
-                \r<a href="mailto:{email}" class="lists" target="_blank">
-                \r{email} <i class="fa fa-envelope" aria-hidden="true"></i>
+                '''\r<li>
+                \r<a href="mailto:'''+email+'''" class="lists" target="_blank">
+                \r'''+email+''' <i class="fa fa-envelope" aria-hidden="true"></i>
                 \r</a></li>'''
             )
         index.write(
-            f'''\r</div>
+            '''\r</div>
             \r</div>
             \r</div>
             \r</div>
@@ -129,7 +129,7 @@ class PageCreator:
         index.close()
 
     def createFilesPage(self, arrayListLinks):
-        index = open(f'files_{self.getFile()}' , 'w')
+        index = open('files_'''+self.getFile() , 'w')
         index.write(self.headerHTML())
         index.write(
             f'''\r<div id="wrapper">
@@ -143,15 +143,15 @@ class PageCreator:
         count=1
         for files in arrayListLinks:
             index.write(
-                f'''\r<li><a href="{files}" class="lists" target="_blank">
-                \r{count} - {files.split('/')[-1]} -
+                '''\r<li><a href="'''+files+'''" class="lists" target="_blank">
+                \r'''+count+''' - '''+files.split('/')[-1]+''' -
                 \rLink <i class="fa fa-external-link" aria-hidden="true"></i>
                 \r</a></li>'''
             )
             count+=1
 
         index.write(
-            f'''\r</div>
+            '''\r</div>
             \r</div>
             \r</div>
             \r</div>
@@ -161,10 +161,10 @@ class PageCreator:
         index.close()
 
     def createImgPage(self, arrayListImage):
-        index = open(f'img_{self.getFile()}' , 'w')
+        index = open('img_'+self.getFile() , 'w')
         index.write(self.headerHTML())
         index.write(
-            f'''\r<div id="wrapper">
+            '''\r<div id="wrapper">
             \r<div class="container text-center">
             \r<div class="row">
             \r<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -173,15 +173,15 @@ class PageCreator:
         )
         count = 5
         for img in arrayListImage:
-            output = f'''\r<div class="col-xs-12 col-sm-12 col-lg-2 col-md-2">
-            \r<img src='{img}' class="img-responsive"/>
-            \r<a href="{img}" class="text-center" target="_blank">Link para imagem <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            output = '''\r<div class="col-xs-12 col-sm-12 col-lg-2 col-md-2">
+            \r<img src="'''+img+'''" class="img-responsive"/>
+            \r<a href="'''+img+'''" class="text-center" target="_blank">Link para imagem <i class="fa fa-external-link" aria-hidden="true"></i></a>
             \r</div>
             '''
             if count == 0:
                 index.write(
-                    f'''\r<div class='row'>
-                    {output}
+                    '''\r<div class='row'>
+                    '''+output+'''
                     \r</div>'''
                 )
                 count = 6
@@ -190,7 +190,7 @@ class PageCreator:
             count-=1
 
         index.write(
-            f'''\r</div>
+            '''\r</div>
             \r</div>
             \r</div>
             \r</div>
@@ -200,10 +200,10 @@ class PageCreator:
         index.close()
 
     def createLattesPage(self, arrayListLattes):
-        index = open(f'lattes_{self.getFile()}' , 'w')
+        index = open('lattes_'+self.getFile() , 'w')
         index.write(self.headerHTML())
         index.write(
-            f'''\r<div id="wrapper">
+            '''\r<div id="wrapper">
             \r<div class="container text-center">
             \r<div class="row">
             \r<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
@@ -214,13 +214,13 @@ class PageCreator:
         count=1
         for lattes in arrayListLattes:
             index.write(
-                f'''\r<li><a href="{lattes}" class="lists" target="_blank">
-                \r{lattes.split('/')[-1]} - Link <i class="fa fa-external-link" aria-hidden="true"></i>
+                '''\r<li><a href="'''+lattes+'''" class="lists" target="_blank">
+                \r'''+lattes.split('/')[-1]+''' - Link <i class="fa fa-external-link" aria-hidden="true"></i>
                 \r</a></li>'''
             )
 
         index.write(
-            f'''\r</div>
+            '''\r</div>
             \r</div>
             \r</div>
             \r</div>
@@ -231,10 +231,10 @@ class PageCreator:
 
 
     def createUrlsPage(self, uri):
-        index = open(f'urls_{self.getFile()}' , 'w')
+        index = open('urls_'+self.getFile() , 'w')
         index.write(self.headerHTML())
         index.write(
-            f'''\r<div id="wrapper">
+            '''\r<div id="wrapper">
             \r<div class="container text-center">
             \r<div class="row">
             \r<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
@@ -245,15 +245,15 @@ class PageCreator:
         count=1
         for files in uri:
             index.write(
-                f'''\r<li><a href="{files}" class="lists" target="_blank">
-                \r{count} - {files} -
+                '''\r<li><a href="'''+files+'''" class="lists" target="_blank">
+                \r'''+count+''' - '''+files+''' -
                 \rLink <i class="fa fa-external-link" aria-hidden="true"></i>
                 \r</a></li>'''
             )
             count+=1
 
         index.write(
-            f'''\r</div>
+            '''\r</div>
             \r</div>
             \r</div>
             \r</div>

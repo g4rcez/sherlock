@@ -27,7 +27,7 @@ class Server:
             url = url.replace('http://','')
             url = url.replace('https://','')
             url = sub('/.*','',url)
-            return f'{gethostbyname(url)}'.strip()
+            return str(gethostbyname(url).strip())
         else:
             return gethostbyname(url).strip()
 

@@ -165,11 +165,11 @@ for link in uri:
             files.setFiles(codingHTML, link)
             validLinks.append(link)
             print('--------------------------------------------------------')
-            print(f'Informação sobre: {link}')
-            print(f'Emails encontrados até o momento: {str(len(emails.getEmails()))}')
-            print(f'Lattes encontrados até o momento: {str(len(curriculo.getLattes()))}')
-            print(f'Imagens encontradas até o momento: {str(len(image.getImages()))}')
-            print(f'Arquivos encontrados até o momento: {str(len(files.getFiles()))}')
+            print('Informação sobre: ' + link)
+            print(f'Emails encontrados até o momento: ' + str(len(emails.getEmails())))
+            print(f'Lattes encontrados até o momento: ' + str(len(curriculo.getLattes())))
+            print(f'Imagens encontradas até o momento: ' + str(len(image.getImages())))
+            print(f'Arquivos encontrados até o momento: ' + str(len(files.getFiles())))
             saltos -= 1
             if saltos == 0:
                 saltos = limit
@@ -184,7 +184,7 @@ for link in uri:
 endTime = time.time()
 
 print()
-print(f'Fim da análise formatando resultados...Tempo gasto: {round(endTime-initialTime, 3)} segundos')
+print(f'Fim da análise formatando resultados...Tempo gasto: '+ str(round(endTime-initialTime, 3)) +'  segundos')
 try:
     position = Server('www.' + bouncer.getDomain())
 except:
@@ -212,7 +212,7 @@ if jsonFile is not False:
     try:
         archive = open(jsonFile, 'w')
     except:
-        print(f'Erro ao criar arquivo {jsonFile}')
+        print('Erro ao criar arquivo' + jsonFile)
         exit()
     archive.write(json.dumps({
         'emails': emails.getEmails(),
@@ -224,7 +224,7 @@ if jsonFile is not False:
         'files': files.getFiles()
     }, sort_keys = True, indent = 2))
     archive.close()
-    print(f"Arquivo {jsonFile} gerado com sucesso")
+    print(f"Arquivo " + jsonFile + " gerado com sucesso")
 
 if Getopt.getOpt(argv, ['-H', '--html']):
     directory = Getopt.getOptAndValue(argv, ['-H', '--html']).strip()
