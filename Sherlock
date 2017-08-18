@@ -166,10 +166,10 @@ for link in uri:
             validLinks.append(link)
             print('--------------------------------------------------------')
             print('Informação sobre: ' + link)
-            print(f'Emails encontrados até o momento: ' + str(len(emails.getEmails())))
-            print(f'Lattes encontrados até o momento: ' + str(len(curriculo.getLattes())))
-            print(f'Imagens encontradas até o momento: ' + str(len(image.getImages())))
-            print(f'Arquivos encontrados até o momento: ' + str(len(files.getFiles())))
+            print('Emails encontrados até o momento: ' + str(len(emails.getEmails())))
+            print('Lattes encontrados até o momento: ' + str(len(curriculo.getLattes())))
+            print('Imagens encontradas até o momento: ' + str(len(image.getImages())))
+            print('Arquivos encontrados até o momento: ' + str(len(files.getFiles())))
             saltos -= 1
             if saltos == 0:
                 saltos = limit
