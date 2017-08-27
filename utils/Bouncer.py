@@ -59,14 +59,33 @@ class Bouncer:
             if page[0] != '#' and url not in page and not UrlUtils.containsHTTP(page):
                 urls.append('http://' + url + '/' + page)
             else:
-                if url not in page and not UrlUtils.externalLink(url, page):
-                    urls.append(url + '/' + page)
-                else:
-                    if url in page:
+                if type(page) is str:
+                    if self.pageOrExternal(page, url):
                         urls.append(page)
-                    else:
-                        if UrlUtils.externalLink(url, page):
-                            self.setExternals(page)
+                elif type(page) is list:
+                    for string in list:
+                        if self.pageOrExternal(string, url):
+                            urls.append(string)
+        list(set(urls))
+        return urls
 
+    def pageOrExternal(self, page, url):
+        if url in page:
+            return True
+        elif UrlUtils.externalLink(url, page):
+                self.setExternals(page)
+                return False
+
+    def searchAndAddExternalPages(self, html, url):
+        urls = []
+        for link in html.findAll('a', href = True):
+            page = link['href']
+            if type(page) is str:
+                if not self.pageOrExternal(page, url):
+                    urls.append(page)
+            elif type(page) is list:
+                for string in list:
+                    if not self.pageOrExternal(string, url):
+                        urls.append(string)
         list(set(urls))
         return urls

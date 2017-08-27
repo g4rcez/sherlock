@@ -1,25 +1,13 @@
 from re import sub
 from re import findall
+from parsers.Parser import Parser
 from utils.UrlUtils import UrlUtils
 
 
-class Lattes:
-    def __init__(self):
+class Lattes(Parser):
+    def __init__(self, html = '', arrayList = []):
+        Parser.__init__(self, html, arrayList)
         self._lattes = []
-
-    def getHTML(self):
-        return self._html
-
-    def setHTML(self, html):
-        self.__setHTML(html)
-
-    def __setHTML(self, html):
-        self._html = html
-
-    def __setLinksForLattes(self, arrayList):
-        for link in arrayList:
-            self._lattes.append(link)
-        list(set(self._lattes))
 
     def setLattes(self, html):
         self.setHTML(html)
@@ -29,7 +17,7 @@ class Lattes:
             latte = sub('".*', '', lattes)
             latte = sub(".*'", '', latte).strip()
             lattes_list.append(latte)
-        self.__setLinksForLattes(lattes_list)
+        self._lattes = self.organizeList(lattes_list)
 
     def getLattes(self):
         return self._lattes

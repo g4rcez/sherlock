@@ -1,10 +1,12 @@
 from re import findall
+from parsers.Parser import Parser
 from webpkg.WebRequest import WebRequest
 from utils.StringManipulate import StringManipulate
 
 
-class Physical:
-    def __init__(self):
+class Physical(Parser):
+    def __init__(self, html = '', arrayList = []):
+        Parser.__init__(self, html, arrayList)
         self._json = None
         self._ceps = []
         self._address = []

@@ -21,7 +21,8 @@ Começou no intuito de estudar a biblioteca do Python [BeautifulSoup 4](https://
 ### Guia do Programa
 Este script possui uma lista (que tende a crescer) de parâmetros de uso, para
 mais informações, leia o [Manual do Usuário](docs/Manual.md) para entender melhor como funciona
-cada um desses parâmetros
+cada um desses parâmetros.
+<small>Perdoem a falta de tempo para a conclusão da modelagem, o foco está todo no programa</small>
 
 #### **[docs/Manual.md](docs/Manual.md)**
 

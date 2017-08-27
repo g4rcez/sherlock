@@ -1,16 +1,12 @@
-from utils.ExtensionFiles import ExtensionsFile
+from parsers.Parser import Parser
 from utils.UrlUtils import UrlUtils
+from utils.ExtensionFiles import ExtensionsFile
 
-
-class Files:
-    def __init__(self):
+class Files(Parser):
+    def __init__(self, html = '', arrayList = []):
+        Parser.__init__(self, html, arrayList)
         self._list = []
-
-    def getHTML(self):
-        return self._html
-
-    def setHTML(self, html):
-        self._html = html
+        self._externals = []
 
     def getFiles(self):
         return self._list
@@ -18,11 +14,11 @@ class Files:
     # @param List
     # return void
 
-    def __setNewFilesInList(self, arrayList):
+    def filterFiles(self, arrayList):
         for thisFile in arrayList:
-            if ExtensionsFile.hasExtension(thisFile):
+            if ExtensionsFile.hasExtension(thisFile) and not ExtensionsFile.isImage(thisFile):
                 self._list.append(thisFile)
-        list(set(self._list))
+        self._list = self.organizeList(self._list)
 
     # @param BeautifulSoup4Obj, string
     # @return void
@@ -32,7 +28,11 @@ class Files:
         internalList = []
         for files in self.getHTML().findAll('a', href = True):
             linkToFile = files['href']
-            if UrlUtils.containsHTTP(linkToFile) is False:
-                linkToFile = UrlUtils.assertSiteWithFile(url, linkToFile)
-            internalList.append(linkToFile)
-        self.__setNewFilesInList(internalList)
+            if UrlUtils.externalLink(url, linkToFile) and UrlUtils.containsHTTP(linkToFile):
+                self._externals.append(linkToFile)
+            else:
+                if UrlUtils.containsHTTP(linkToFile) is False:
+                    linkToFile = UrlUtils.assertSiteWithFile(url, linkToFile)
+                if ExtensionsFile.hasExtension(linkToFile) and not UrlUtils.externalLink(url, linkToFile):
+                    internalList.append(linkToFile)
+        self.filterFiles(internalList)

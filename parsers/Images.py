@@ -1,16 +1,12 @@
-from utils.ExtensionFiles import ExtensionsFile
+from parsers.Parser import Parser
 from utils.UrlUtils import UrlUtils
+from utils.ExtensionFiles import ExtensionsFile
 
 
-class Images:
-    def __init__(self):
+class Images(Parser):
+    def __init__(self, html = '', arrayList = []):
+        Parser.__init__(self, html, arrayList)
         self._imgs = []
-
-    def getHTML(self):
-        return self._html
-
-    def setHTML(self, html):
-        self._html = html
 
     def setImages(self, html, url):
         self.setHTML(html)
@@ -23,11 +19,12 @@ class Images:
             images.append(linkToImg.strip())
         self.__allImages(images)
 
+
     def __allImages(self, arrayList):
         for img in arrayList:
-            if ExtensionsFile.hasExtension(img):
-                self.getImages().append(img)
-        list(set(self.getImages()))
+            if ExtensionsFile.isImage(img):
+                self._imgs.append(img)
+            self._imgs = self.organizeList(arrayList)
 
     def getImages(self):
         return self._imgs

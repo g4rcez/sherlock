@@ -16,6 +16,19 @@ class ExtensionsFile:
         return False
 
     @staticmethod
+    def isImage(file):
+        extensions = [
+            'jpg', 'jpeg', 'png', 'gif'
+        ]
+        try:
+            ext = file.split('.')[-1]
+        except:
+            return False
+        if ext in extensions:
+            return True
+        return False
+
+    @staticmethod
     def extensionForWebPage(file):
         extensions = [
             'php', 'html', 'jsp', 'asp', 'xhtml', 'xml', 'jspx', 'jhml',

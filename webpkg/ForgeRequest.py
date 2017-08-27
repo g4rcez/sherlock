@@ -1,12 +1,10 @@
-import random
 import requests
-from json import loads
+import random
 
 
-class WebRequest:
-    # @return string
+class ForgeRequest:
     @staticmethod
-    def randomUserAgent():
+    def __getFakeUserAgent():
         user_agent = [
             'AppleWebKit/537.36 (KHTML, like Gecko)',
             'Links (2.2; FreeBSD 8.1-RELEASE i386; 196x84)',
@@ -24,39 +22,39 @@ class WebRequest:
         ]
         return ''.join(random.sample(user_agent, 1))
 
-    # @param string
-    # @return json
+    @staticmethod
+    def __acceptLanguageValid(locale):
+        locales = ['pt-br', 'en', 'en-us', 'pt']
+        if locale in locales:
+            del locales
+            return True
+        return False
 
     @staticmethod
-    def getJsonFromLink(url):
-        request = requests.get(url, headers = WebRequest.makeHeaderHTTP(url))
-        if request.status_code == 200:
-            return loads(request.text)
-        return None
-
-    # @param string, string
-    # @return dict
-    @staticmethod
-    def makeHeaderHTTP(url, referer = 'www.google.com', lang = 'pt-br'):
-        if referer is None:
-            referer = 'www.google.com'
-        elif type(referer) is list:
-            referer = ''.join(random.sample(referer, 1))
+    def fakeHeaderHttp(userAgent, referer, language):
         return {
-            'accept' : 'text/html,application/xhtml+xml',
-            'user-agent' : WebRequest.randomUserAgent(),
-            'accept-language' : lang,
-            'referer' : referer,
+            'user-agent': userAgent,
+            'referer': referer,
+            'accept-language': language,
+            'accept': 'text/html,application/xhtml+xml'
         }
 
-    # @param string
-    # @return boolean
     @staticmethod
-    def isActiveLink(link):
-        try:
-            request = requests.get(link)
-            if request.ok:
-                return True
-            return False
-        except:
-            return False
+    def requestOk(url):
+        return requests.get(url).ok
+
+    @staticmethod
+    def makeFakeRequest(url, referer='google.com', language='pt-br'):
+        referer = ForgeRequest.__attrValueFromList(referer)
+        userAgent = ForgeRequest.__getFakeUserAgent()
+        if ForgeRequest.__attrValueFromList(language):
+            return requests.get(
+                url,
+                headers=ForgeRequest.fakeHeaderHttp(userAgent, referer, language)
+            )
+
+    @staticmethod
+    def __attrValueFromList(obscurity):
+        if type(obscurity) is list:
+            return ''.join(random.sample(obscurity, 1))
+        return obscurity

@@ -1,21 +1,12 @@
 from re import sub
 from re import findall
+from parsers.Parser import Parser
 from utils.StringManipulate import StringManipulate
 
-class Mail:
-    def __init__(self):
+class Mail(Parser):
+    def __init__(self, html = '', lista = []):
+        Parser.__init__(self, html, lista)
         self._emails = []
-
-    def getHTML(self):
-        return self._html
-
-    def setHTML(self, html):
-        self._html = html
-
-    def __setEmailsForList(self, arrayList):
-        for email in arrayList:
-            self._emails.append(email)
-        list(set(self._emails))
 
     def setEmails(self, html):
         self.setHTML(html)
@@ -29,7 +20,7 @@ class Mail:
                     '<br>','<','>','\\','/','?','(',')','{','}','"',"'",',',';'
                 ])
                 maillist.append(email.split(' ')[0])
-            self.__setEmailsForList(maillist)
+            self._emails = self.organizeList(maillist)
 
     def getEmails(self):
-        return list(set(self._emails))
+        return self._emails
