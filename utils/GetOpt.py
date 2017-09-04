@@ -22,5 +22,5 @@ class Getopt:
     def requiredArgs(stdin, parameters):
         argument = Getopt.getOptAndValue(stdin, parameters)
         if argument == None:
-            argument = ('Informe o argumento ' + ''.join(parameters[0]) + ' (obrigatório): ')
+            argument = input('Informe o argumento ' + ''.join(parameters[0]) + ' (obrigatório): ')
         return argument

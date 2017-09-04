@@ -17,12 +17,13 @@ def bringTrue(choice):
 try:
     import json
     import time
+    import socket
     import requests
     from time import sleep
     from bs4 import BeautifulSoup
     from urllib.error import HTTPError
 except:
-    print("Deseja instalar os requisitos faltantes? [Y/n]")
+    print("Deseja instalar os requisitos faltantes?[S/n] ")
     vaiInstalar = input('-> ')
     if bringTrue(vaiInstalar):
         del vaiInstalar
@@ -38,7 +39,7 @@ from utils.Bouncer import Bouncer
 from parsers.Images import Images
 from parsers.Lattes import Lattes
 from parsers.Server import Server
-from utils.Arguments import Getopt
+from utils.GetOpt import Getopt
 from utils.UrlUtils import UrlUtils
 from webpkg.WebRequest import WebRequest
 from parsers.PhysicalAddr import Physical
@@ -83,6 +84,17 @@ def foundExternalLinks(codingHTML, bouncer):
     list(filter('...'.__ne__, fictExt))
     return fictExt
 
+def getWhoisFromDomain(whoisDomain):
+    sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sockets.connect(('200.160.2.3', 43))
+    sockets.send(str.encode(whoisDomain+'\r\n'))
+    string = sockets.recv(2048)
+    sockets.close()
+    del sockets
+    try:
+        return string.decode('unicode_escape')
+    except:
+        return string
 
 def msgScreenAtt():
     print('Links externos até o momento: ' + str(len(externalLinks)))
@@ -133,11 +145,14 @@ elif ('-h', '--help') in argv:
 uri = ''
 html = ''
 limit = ''
+whois = ''
 wordlist = ''
 jsonFile = ''
 validLinks = []
 externalLinks = []
 url = Getopt.requiredArgs(argv, ['-t', '--target']).strip()
+if url is None or url is '':
+    url = input('Informe um domínio: ')
 if url[-1] != '/' and not ExtensionsFile.extensionForWebPage(url):
     url += '/'
 if Getopt.getOpt(argv, ['-l', '--limit']):
@@ -152,6 +167,10 @@ if Getopt.getOpt(argv, ['-j', '--json']):
     jsonFile = Getopt.getOptAndValue(argv, ['-j', '--json']).strip()
 else:
     jsonFile = False
+if Getopt.getOpt(argv, ['-W', '--whois']):
+    whois = Getopt.getOptAndValue(argv, ['-W', '--whois']).strip()
+else:
+    whois = False
 if Getopt.getOpt(argv, ['-i', '--interval']):
     interval = int(Getopt.getOptAndValue(argv, ['-i', '--invertal']).strip())
 else:
@@ -169,6 +188,11 @@ image = Images()
 curriculo = Lattes()
 emails = Mail()
 files = Files()
+if not UrlUtils.containsWWW(url):
+    url = 'www.' + url
+if not UrlUtils.containsHTTP(url):
+    url = 'http://' + url
+print('Análise do domínio: ' + url)
 uri = [url]
 if wordlistOpt:
     wordlist = Getopt.getOptAndValue(argv, ['-w', '--wordlist']).strip()
@@ -209,7 +233,7 @@ for link in uri:
             files.setFiles(codingHTML, link)
             validLinks.append(link)
             print('--------------------------------------------------------')
-            print('Informação sobre: ' + link)
+            print('Analisando o link: ' + link)
             msgScreenAtt()
             for validLink in tmpUri:
                 if type(validLink) is str and validLink not in uri:
@@ -222,7 +246,7 @@ for link in uri:
             if saltos == 0:
                 saltos = limit
                 print('--------------------------------------------------------')
-                print('Deseja continuar com as buscas?[Y/n] ')
+                print('Deseja continuar com as buscas?[S/n] ')
                 doContinue = input('-> ')
                 if not bringTrue(doContinue):
                     break
@@ -240,52 +264,69 @@ try:
 except:
     pass
 
-if bringTrue(input('Deseja imprimir o resultado da analise? [S/n] ')):
+imageSort = image.getImages()
+imageSort.sort()
+emailsSort = emails.getEmails()
+emailsSort.sort()
+curriculoSort = curriculo.getLattes()
+curriculoSort.sort()
+sortFiles = files.getFiles()
+sortFiles.sort()
+externalLinks.sort()
+
+
+print(whois)
+
+if bringTrue(input('Deseja imprimir o resultado da analise?[S/n] ')):
     for cep in zipcode.getAllCeps():
         print(zipcode.getAddress(cep))
     print()
     print(position.getGeoLocation())
     print()
-    emailsSort = emails.getEmails()
-    emailsSort.sort()
     printResult(emailsSort, 'Lista de Emails:\n')
     print()
-    curriculoSort = curriculo.getLattes()
-    curriculoSort.sort()
     printResult(curriculoSort, 'Lista de Currículos Lattes:\n')
     print()
-    imageSort = image.getImages()
-    imageSort.sort()
     printResult(image.getImages(), 'Lista de Imagens:\n')
     print()
-    sortFiles = files.getFiles()
-    sortFiles.sort()
     printResult(sortFiles, 'Lista de Arquivos:\n ')
     print()
-    externalLinks.sort()
     printResult(externalLinks, 'Lista de links externos:\n')
+
+if whois is not False:
+    whoisResponse = getWhoisFromDomain(bouncer.getDomain())
+    whois = whois + '.whois'
+    resposta = input('Deseja visualizar as informações sobre Whois?[S/n] ')
+    if bringTrue(resposta):
+        print(whoisResponse)
+    try:
+        whoisFile = open(whois, 'w')
+        for writeln in whoisResponse.split('\n'):
+            whoisFile.write(writeln+'\n')
+    except:
+        print('Erro ao criar ' + whois)
+    del whois, whoisResponse
 
 if jsonFile is not False:
     jsonFile = jsonFile.replace('.json', '')
     jsonFile += '.json'
     try:
         archive = open(jsonFile, 'w')
+        archive.write(json.dumps({
+            'emails': emailsSort,
+            'lattes': curriculoSort,
+            'domain': bouncer.getDomain(),
+            'server-location': position.getGeoLocation(),
+            'address': zipcode.getAllCeps(),
+            'image': imageSort,
+            'files': sortFiles,
+            'external': externalLinks
+        }, sort_keys=True, indent=3))
+        archive.close()
+        print("Arquivo " + jsonFile + " gerado com sucesso")
+        del jsonFile, archive
     except:
         print('Erro ao criar arquivo' + jsonFile)
-        exit()
-    archive.write(json.dumps({
-        'emails': emailsSort,
-        'lattes': curriculoSort,
-        'domain': bouncer.getDomain(),
-        'server-location': position.getGeoLocation(),
-        'address': zipcode.getAllCeps(),
-        'image': imageSort,
-        'files': sortFiles,
-        'external': externalLinks
-    }, sort_keys=True, indent=3))
-    archive.close()
-    print("Arquivo " + jsonFile + " gerado com sucesso")
-    del jsonFile, archive
 
 if Getopt.getOpt(argv, ['-H', '--html']):
     directory = Getopt.getOptAndValue(argv, ['-H', '--html']).strip()
@@ -304,3 +345,4 @@ if Getopt.getOpt(argv, ['-H', '--html']):
     del sortFiles, curriculoSort, curriculoSort, imageSort, emailsSort
 del uri, url, externalLinks, wordlist, json, limit, html, language, interval, wordlistOpt
 del bothThem, saltos, bouncer, zipcode, image, curriculo, emails, files
+exit()
