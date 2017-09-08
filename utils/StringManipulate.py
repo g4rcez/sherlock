@@ -11,9 +11,9 @@ class StringManipulate():
     def removeNonNumbers(string):
         return sub("[^0-9]", "", string)
 
-    # simbols expected a array
+    # simbols expected an array
     @staticmethod
     def removeSpecifieds(string, simbols):
         for simbol in simbols:
-            string = string.replace(simbol,'')
+            string = string.replace(simbol, '')
         return string

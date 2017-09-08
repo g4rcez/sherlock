@@ -11,12 +11,6 @@ class Physical(Parser):
         self._ceps = []
         self._address = []
 
-    def getHTML(self):
-        return self._html
-
-    def setHTML(self, html):
-        self._html = html
-
     def setJson(self, json):
         self._json = json
 

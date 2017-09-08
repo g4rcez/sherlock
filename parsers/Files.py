@@ -2,8 +2,9 @@ from parsers.Parser import Parser
 from utils.UrlUtils import UrlUtils
 from utils.ExtensionFiles import ExtensionsFile
 
+
 class Files(Parser):
-    def __init__(self, html = '', arrayList = []):
+    def __init__(self, html='', arrayList=[]):
         Parser.__init__(self, html, arrayList)
         self._list = []
         self._externals = []
@@ -26,7 +27,7 @@ class Files(Parser):
     def setFiles(self, html, url):
         self.setHTML(html)
         internalList = []
-        for files in self.getHTML().findAll('a', href = True):
+        for files in self.getHTML().findAll('a', href=True):
             linkToFile = files['href']
             if UrlUtils.externalLink(url, linkToFile) and UrlUtils.containsHTTP(linkToFile):
                 self._externals.append(linkToFile)

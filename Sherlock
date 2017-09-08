@@ -1,9 +1,21 @@
 #!/usr/bin/python3
 # coding: utf-8
 
-# Imports Python
-from sys import argv
 from os import system
+from sys import argv
+from parsers.Mails import Mail
+from utils.GetOpt import Getopt
+from parsers.Files import Files
+from utils.Bouncer import Bouncer
+from parsers.Images import Images
+from parsers.Lattes import Lattes
+from parsers.Server import Server
+from utils.UrlUtils import UrlUtils
+from webpkg.WebRequest import WebRequest
+from parsers.PhysicalAddr import Physical
+from webpkg.PageCreator import PageCreator
+from webpkg.ForgeRequest import ForgeRequest
+from utils.ExtensionFiles import ExtensionsFile
 
 
 def bringTrue(choice):
@@ -19,10 +31,8 @@ try:
     import time
     import socket
     import requests
-    from time import sleep
     from bs4 import BeautifulSoup
-    from urllib.error import HTTPError
-except:
+except ModuleNotFoundError:
     print("Deseja instalar os requisitos faltantes?[S/n] ")
     vaiInstalar = input('-> ')
     if bringTrue(vaiInstalar):
@@ -31,21 +41,6 @@ except:
     else:
         print('Sem os requisitos fica díficil, amigo...')
         exit()
-
-# My imports
-from parsers.Mails import Mail
-from parsers.Files import Files
-from utils.Bouncer import Bouncer
-from parsers.Images import Images
-from parsers.Lattes import Lattes
-from parsers.Server import Server
-from utils.GetOpt import Getopt
-from utils.UrlUtils import UrlUtils
-from webpkg.WebRequest import WebRequest
-from parsers.PhysicalAddr import Physical
-from webpkg.PageCreator import PageCreator
-from webpkg.ForgeRequest import ForgeRequest
-from utils.ExtensionFiles import ExtensionsFile
 
 
 def printResult(arrayList, message='Elementos: '):
@@ -84,10 +79,11 @@ def foundExternalLinks(codingHTML, bouncer):
     list(filter('...'.__ne__, fictExt))
     return fictExt
 
+
 def getWhoisFromDomain(whoisDomain):
     sockets = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sockets.connect(('200.160.2.3', 43))
-    sockets.send(str.encode(whoisDomain+'\r\n'))
+    sockets.send(str.encode(whoisDomain + '\r\n'))
     string = sockets.recv(2048)
     sockets.close()
     del sockets
@@ -95,6 +91,7 @@ def getWhoisFromDomain(whoisDomain):
         return string.decode('unicode_escape')
     except:
         return string
+
 
 def msgScreenAtt():
     print('Links externos até o momento: ' + str(len(externalLinks)))
@@ -130,6 +127,7 @@ def ajudaCara():
 \r\t-s, --subdomain\t\tRealiza tentativas de subdominio(parâmetro -w obrigatório)
 \r\t-t, --target\t\tPágina raiz do site a ser analisado.
 \r\t-w, --wordlist\t\tWordlist para tentativa de bruteforce
+\r\t-W, --whois\t\tWordlist para tentativa de bruteforce
 \n\r*Extensões reconhecidas pelo programa:
 \tjpg, jpeg, pdf, png, mp3, mp4, avi, docx, doc, odt, txt,gif, js,
 \tcss, csv, exe, mov, psd, tar, zip, wav, xml, xsl, ppt, pptx, m4a,
@@ -174,7 +172,7 @@ else:
 if Getopt.getOpt(argv, ['-i', '--interval']):
     interval = int(Getopt.getOptAndValue(argv, ['-i', '--invertal']).strip())
 else:
-    interval = 0
+    interval = 1
 if Getopt.getOpt(argv, ['-r', '--referer']):
     referer = Getopt.getOptAndValue(argv, ['-r', '--referer']).strip().split(',')
 else:
@@ -250,7 +248,7 @@ for link in uri:
                 doContinue = input('-> ')
                 if not bringTrue(doContinue):
                     break
-            sleep(interval)
+            time.sleep(interval)
     except (requests.ConnectionError, requests.exceptions.MissingSchema):
         continue
     except KeyboardInterrupt:
@@ -274,8 +272,8 @@ sortFiles = files.getFiles()
 sortFiles.sort()
 externalLinks.sort()
 
-
-print(whois)
+if not whois == False:
+    print(whois)
 
 if bringTrue(input('Deseja imprimir o resultado da analise?[S/n] ')):
     for cep in zipcode.getAllCeps():
@@ -302,7 +300,7 @@ if whois is not False:
     try:
         whoisFile = open(whois, 'w')
         for writeln in whoisResponse.split('\n'):
-            whoisFile.write(writeln+'\n')
+            whoisFile.write(writeln + '\n')
     except:
         print('Erro ao criar ' + whois)
     del whois, whoisResponse
@@ -325,7 +323,7 @@ if jsonFile is not False:
         archive.close()
         print("Arquivo " + jsonFile + " gerado com sucesso")
         del jsonFile, archive
-    except:
+    except (FileNotFoundError, SyntaxError):
         print('Erro ao criar arquivo' + jsonFile)
 
 if Getopt.getOpt(argv, ['-H', '--html']):
@@ -344,5 +342,5 @@ if Getopt.getOpt(argv, ['-H', '--html']):
     del directory, index, emails, curriculo, files, image, validLinks
     del sortFiles, curriculoSort, curriculoSort, imageSort, emailsSort
 del uri, url, externalLinks, wordlist, json, limit, html, language, interval, wordlistOpt
-del bothThem, saltos, bouncer, zipcode, image, curriculo, emails, files
+del bothThem, saltos, bouncer, zipcode, image, curriculo, emails, files, whois
 exit()

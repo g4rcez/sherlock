@@ -19,13 +19,15 @@ Parâmetro     Valor
 
 -L, --language	  'Accept-Language' do cabeçalho HTTP. Pode ser passado mais de um locale, separado por vírgula ','
 
--r, --referer	  'Referer' do cabeçalho HTTP. Pode ser passado mais de um referer, separado por vírgula ','
+-r, --referer	    'Referer' do cabeçalho HTTP. Pode ser passado mais de um referer, separado por vírgula ','
 
 -s, --subdomain   Realiza tentativas de subdominio(parâmetro -w obrigatório)
 
 -t, --target      Página raiz do site a ser analisado.
 
 -w, --wordlist    Wordlist para tentativa de bruteforce
+
+-W, --whois       Wordlist para tentativa de bruteforce
 </pre>
 
 \*Extensões reconhecidas pelo programa:

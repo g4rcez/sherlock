@@ -16,9 +16,9 @@ class Bouncer:
     def __setDomain(self, domain):
         tmp = domain
         if UrlUtils.containsHTTP(domain):
-            tmp = tmp.replace('http://','').replace('https://','')
+            tmp = tmp.replace('http://', '').replace('https://', '')
         if UrlUtils.containsWWW(tmp):
-            tmp = tmp.replace('www.','')
+            tmp = tmp.replace('www.', '')
         self._domain = tmp.split('/')[0]
 
     def getDomain(self):
@@ -42,7 +42,7 @@ class Bouncer:
     def getCurrentWordFromWordlist(self):
         self._currentLine += 1
         if self._currentLine < self._fileLines:
-            return linecache.getline(self.getWordlist(), self._currentLine).replace('\n','')
+            return linecache.getline(self.getWordlist(), self._currentLine).replace('\n', '')
         return None
 
     def setExternals(self, externalLink):
@@ -54,7 +54,7 @@ class Bouncer:
 
     def searchAndAddLinksFromMain(self, html, url):
         urls = []
-        for link in html.findAll('a', href = True):
+        for link in html.findAll('a', href=True):
             page = link['href']
             try:
                 if page[0] != '#' and url not in page and not UrlUtils.containsHTTP(page):
@@ -76,12 +76,12 @@ class Bouncer:
         if url in page:
             return True
         elif UrlUtils.externalLink(url, page):
-                self.setExternals(page)
-                return False
+            self.setExternals(page)
+            return False
 
     def searchAndAddExternalPages(self, html, url):
         urls = []
-        for link in html.findAll('a', href = True):
+        for link in html.findAll('a', href=True):
             page = link['href']
             if type(page) is str:
                 if not self.pageOrExternal(page, url):

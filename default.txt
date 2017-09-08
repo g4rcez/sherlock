@@ -4,6 +4,7 @@ administrador
 administrator
 afrodite
 amazo
+amazon
 anakyn
 andromeda
 anon-ftp

@@ -171,7 +171,6 @@ class PageCreator:
             \r<div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1">
             \r<h2 class="text-center">Índice de arquivos obtidos</h2><p><ul>'''
         )
-        count = 1
         for lattes in arrayListLattes:
             index.write(
                 '''\r<li><a href="''' + lattes + '''" class="lists" target="_blank">

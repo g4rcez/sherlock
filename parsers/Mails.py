@@ -3,8 +3,9 @@ from re import findall
 from parsers.Parser import Parser
 from utils.StringManipulate import StringManipulate
 
+
 class Mail(Parser):
-    def __init__(self, html = '', lista = []):
+    def __init__(self, html='', lista=[]):
         Parser.__init__(self, html, lista)
         self._emails = []
 
@@ -17,7 +18,7 @@ class Mail(Parser):
                 email = sub(r'".*', '', str(links))
                 email = sub(r"'.*", '', email).strip()
                 email = StringManipulate.removeSpecifieds(email, [
-                    '<br>','<','>','\\','/','?','(',')','{','}','"',"'",',',';'
+                    '<br>', '<', '>', '\\', '/', '?', '(', ')', '{', '}', '"', "'", ',', ';'
                 ])
                 maillist.append(email.split(' ')[0])
             self._emails = self.organizeList(maillist)

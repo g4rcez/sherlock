@@ -32,6 +32,8 @@ class ForgeRequest:
 
     @staticmethod
     def fakeHeaderHttp(userAgent, referer, language):
+        if referer == None:
+            referer = 'www.google.com'
         return {
             'user-agent': userAgent,
             'referer': referer,

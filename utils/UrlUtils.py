@@ -26,7 +26,7 @@ class UrlUtils:
                 return url
             else:
                 url = UrlUtils.httpsTohttp(url)
-                url = url.replace('http://','')
+                url = url.replace('http://', '')
                 url = 'http://www.' + url
                 return url
         return url
@@ -39,8 +39,6 @@ class UrlUtils:
                 link = link.replace('www', '')
                 return 'http://www.' + link
         return False
-
-
 
     @staticmethod
     def containsHTTP(url):
