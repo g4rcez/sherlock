@@ -33,12 +33,10 @@ class ExtensionsFile:
         extensions = [
             'php', 'html', 'jsp', 'asp', 'xhtml', 'xml', 'jspx', 'jhml',
             'htm', 'wss', 'action', 'pl', 'phtml', 'py', 'rhtml', 'rb',
-            'shtml', 'cgi', 'dll', 'asx'
+            'shtml', 'cgi', 'dll', "asx", ''
         ]
         try:
             ext = file.split('.')[-1]
         except:
             return False
-        if ext in extensions:
-            return True
-        return False
+        return ext in extensions

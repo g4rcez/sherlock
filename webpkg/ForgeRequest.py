@@ -25,10 +25,7 @@ class ForgeRequest:
     @staticmethod
     def __acceptLanguageValid(locale):
         locales = ['pt-br', 'en', 'en-us', 'pt']
-        if locale in locales:
-            del locales
-            return True
-        return False
+        return locale in locales
 
     @staticmethod
     def fakeHeaderHttp(userAgent, referer, language):
@@ -43,7 +40,7 @@ class ForgeRequest:
 
     @staticmethod
     def requestOk(url):
-        return requests.get(url).ok
+        return requests.get(url).status_code == 200
 
     @staticmethod
     def makeFakeRequest(url, referer='google.com', language='pt-br'):

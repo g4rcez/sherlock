@@ -28,9 +28,7 @@ class Bouncer:
         return self._readUrls
 
     def isReadUrl(self, url):
-        if url in self.getReadUrl():
-            return False
-        return True
+        return url in self.getReadUrl()
 
     def setWordlist(self, path):
         self._path = os.path.abspath(path)
@@ -57,9 +55,7 @@ class Bouncer:
         for link in html.findAll('a', href=True):
             page = link['href']
             try:
-                if page[0] != '#' and url not in page and not UrlUtils.containsHTTP(page):
-                    urls.append('http://' + url + '/' + page)
-                else:
+                if not "#" in page and not UrlUtils.containsHTTP(page):
                     if type(page) is str:
                         if self.pageOrExternal(page, url):
                             urls.append(page)
@@ -67,9 +63,8 @@ class Bouncer:
                         for string in list:
                             if self.pageOrExternal(string, url):
                                 urls.append(string)
-            except:
+            except ValueError:
                 continue
-        list(set(urls))
         return urls
 
     def pageOrExternal(self, page, url):

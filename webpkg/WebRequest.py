@@ -24,8 +24,6 @@ class WebRequest:
     def isActiveLink(link):
         try:
             request = requests.get(link)
-            if request.ok:
-                return True
-            return False
-        except:
+            return request.status_code
+        except (requests.ConnectionError, requests.ConnectTimeout):
             return False

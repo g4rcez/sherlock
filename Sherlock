@@ -11,6 +11,7 @@ from parsers.Images import Images
 from parsers.Lattes import Lattes
 from parsers.Server import Server
 from utils.UrlUtils import UrlUtils
+from collections import OrderedDict
 from webpkg.WebRequest import WebRequest
 from parsers.PhysicalAddr import Physical
 from webpkg.PageCreator import PageCreator
@@ -19,11 +20,7 @@ from utils.ExtensionFiles import ExtensionsFile
 
 
 def bringTrue(choice):
-    choice = choice.upper().strip()
-    if choice == "Y" or choice == "S":
-        del choice
-        return True
-    return False
+    return choice.upper().strip() == "S" or choice.upper().strip() == "Y"
 
 
 try:
@@ -249,6 +246,7 @@ for link in uri:
                 if not bringTrue(doContinue):
                     break
             time.sleep(interval)
+            list(OrderedDict.fromkeys(uri))
     except (requests.ConnectionError, requests.exceptions.MissingSchema):
         continue
     except KeyboardInterrupt:

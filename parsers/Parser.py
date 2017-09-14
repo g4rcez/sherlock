@@ -1,3 +1,6 @@
+from collections import OrderedDict
+
+
 class Parser:
     def __init__(self, html = '', lista = []):
         self.html = html
@@ -15,4 +18,5 @@ class Parser:
         for newItem in self.lista:
                 while self.lista.count(newItem) != 1:
                     self.lista.remove(newItem)
+        list(OrderedDict.fromkeys(self.lista))
         return list(set(self.lista))

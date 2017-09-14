@@ -1,9 +1,7 @@
 class UrlUtils:
     @staticmethod
     def containsWWW(url):
-        if 'www.' in url:
-            return True
-        return False
+        return 'www.' in url
 
     @staticmethod
     def httpsTohttp(url):
@@ -42,9 +40,7 @@ class UrlUtils:
 
     @staticmethod
     def containsHTTP(url):
-        if 'http://' in url or 'https://' in url:
-            return True
-        return False
+        return 'http://' in url or 'https://' in url
 
     @staticmethod
     def makeDomain(url, complement):
@@ -61,6 +57,4 @@ class UrlUtils:
 
     @staticmethod
     def externalLink(url, link):
-        if UrlUtils.containsHTTP(link) and url not in link:
-            return True
-        return False
+        return UrlUtils.containsHTTP(link) and url not in link
