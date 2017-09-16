@@ -62,7 +62,8 @@ def foundLinksInPage(codingHTML, bouncer):
             else:
                 fictUri.append(UrlUtils.httpAndWww(newlink))
                 fictUri.append(newlink)
-    list(filter('...'.__ne__, fictUri))
+    fictUri = list(filter('...'.__ne__, fictUri))
+    fictUri = list(set(fictUri))
     return fictUri
 
 
@@ -74,6 +75,7 @@ def foundExternalLinks(codingHTML, bouncer):
             if UrlUtils.containsHTTP(extLink) and bouncer.getDomain() not in extLink:
                 fictExt.append(extLink)
     list(filter('...'.__ne__, fictExt))
+    fictExt = list(set(fictExt))
     return fictExt
 
 
@@ -202,7 +204,7 @@ if wordlistOpt:
         except TypeError:
             continue
 
-list(filter(None.__ne__, uri))
+uri = list(filter(None.__ne__, uri))
 
 initialTime = time.time()
 
@@ -246,7 +248,8 @@ for link in uri:
                 if not bringTrue(doContinue):
                     break
             time.sleep(interval)
-            list(OrderedDict.fromkeys(uri))
+            uri = list(OrderedDict.fromkeys(uri))
+            uri = list(set(uri))
     except (requests.ConnectionError, requests.exceptions.MissingSchema):
         continue
     except KeyboardInterrupt:

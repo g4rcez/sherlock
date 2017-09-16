@@ -55,7 +55,9 @@ class Bouncer:
         for link in html.findAll('a', href=True):
             page = link['href']
             try:
-                if not "#" in page and not UrlUtils.containsHTTP(page):
+                if page[0] != '#' and url not in page and not UrlUtils.containsHTTP(page):
+                    urls.append('http://' + url + '/' + page)
+                else:
                     if type(page) is str:
                         if self.pageOrExternal(page, url):
                             urls.append(page)
@@ -63,8 +65,9 @@ class Bouncer:
                         for string in list:
                             if self.pageOrExternal(string, url):
                                 urls.append(string)
-            except ValueError:
+            except:
                 continue
+        list(set(urls))
         return urls
 
     def pageOrExternal(self, page, url):
@@ -85,5 +88,5 @@ class Bouncer:
                 for string in list:
                     if not self.pageOrExternal(string, url):
                         urls.append(string)
-        list(set(urls))
+        urls = list(set(urls))
         return urls

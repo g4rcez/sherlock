@@ -12,8 +12,10 @@ class Files(Parser):
     def getFiles(self):
         return self._list
 
-    # @param List
-    # return void
+    '''
+    :param List
+    :return void
+    '''
 
     def filterFiles(self, arrayList):
         for thisFile in arrayList:
@@ -21,8 +23,10 @@ class Files(Parser):
                 self._list.append(thisFile)
         self._list = self.organizeList(self._list)
 
-    # @param BeautifulSoup4Obj, string
-    # @return void
+    '''
+    :param BeautifulSoup4Obj, string
+    :return void
+    '''
 
     def setFiles(self, html, url):
         self.setHTML(html)

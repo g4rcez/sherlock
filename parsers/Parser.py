@@ -18,5 +18,6 @@ class Parser:
         for newItem in self.lista:
                 while self.lista.count(newItem) != 1:
                     self.lista.remove(newItem)
-        list(OrderedDict.fromkeys(self.lista))
-        return list(set(self.lista))
+        self.lista = list(OrderedDict.fromkeys(self.lista))
+        self.lista = list(set(self.lista))
+        return self.lista
