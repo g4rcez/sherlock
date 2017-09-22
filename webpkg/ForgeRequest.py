@@ -43,7 +43,7 @@ class ForgeRequest:
         return requests.get(url).status_code == 200
 
     @staticmethod
-    def makeFakeRequest(url, referer='google.com', language='pt-br'):
+    def makeFakeRequest(url, referer='google.com', language='pt-br', ):
         referer = ForgeRequest.__attrValueFromList(referer)
         userAgent = ForgeRequest.__getFakeUserAgent()
         if ForgeRequest.__attrValueFromList(language):

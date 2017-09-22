@@ -1,22 +1,11 @@
 #!/bin/bash
-if [[ "$(whoami)" == "root" ]]; then
-	defaultDir="$(pwd)"
-	cd /tmp
-
-	# Em alguns ambientes o wget padrão é bloqueado, com uma pequena definição de
-	# user-agent, isso é consertado. xD
-
-	wget 'https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tar.xz' --user-agent Firefox
-	tar -xf 'Python-3.6.2.tar.xz'
-	cd Python-3.6.2/
-	sudo ./configure && sudo make && sudo make install
-
-	# Mesma coisa citada anteriormente
-	cd /tmp && wget "https://bootstrap.pypa.io/get-pip.py" --user-agent 'Firefox HueBr' -v
-	sudo python3.6 get-pip.py
-
-	cd "$defaultDir"
-	sudo pip install -r requirements.txt
+if [[ $(whoami) == "root" ]]; then
+mkdir -p /usr/share/sherlock
+cp -rf * /usr/share/sherlock/
+echo '#!/bin/sh
+cd /usr/share/sherlock
+python3 Sherlock "$@"' > /usr/bin/sherlock
+chmod +x /usr/bin/sherlock
 else
-	echo "Você precisa ser um usuário root"
+    echo "[!] Você deve ser um usuário root para instalar o script"
 fi
